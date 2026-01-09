@@ -32,6 +32,7 @@ export function Modal({
     sm: 'max-w-md',
     md: 'max-w-2xl',
     lg: 'max-w-4xl',
+    large: 'max-w-4xl',
     xl: 'max-w-6xl',
   };
 
@@ -43,7 +44,7 @@ export function Modal({
       <div
         className={clsx(
           'card w-full max-h-[90vh] overflow-y-auto animate-slide-up',
-          sizeClasses[size],
+          sizeClasses[size as keyof typeof sizeClasses],
           className
         )}
         onClick={(e) => e.stopPropagation()}

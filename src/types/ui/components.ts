@@ -17,24 +17,26 @@ export interface ButtonProps extends BaseComponentProps {
 export interface InputProps {
   label?: string;
   placeholder?: string;
-  value: string;
-  onChange: (value: string) => void;
+  value: string | number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: 'text' | 'email' | 'password' | 'number' | 'date' | 'url';
   error?: string;
   required?: boolean;
   disabled?: boolean;
   className?: string;
+  icon?: ReactNode;
+  autoFocus?: boolean;
 }
 
 export interface ModalProps extends BaseComponentProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'large';
 }
 
 export interface BadgeProps extends BaseComponentProps {
-  variant?: 'default' | 'success' | 'warning' | 'danger' | 'info';
+  variant?: 'default' | 'success' | 'warning' | 'danger' | 'info' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
 }
 

@@ -10,7 +10,7 @@ interface ExportData {
 }
 
 class ExportService {
-  exportToJSON(influencers: Influencer[], games: Game[]): void {
+  exportJSON(games: Game[], influencers: Influencer[]): void {
     const data: ExportData = {
       version: '3.0.0',
       exportDate: new Date().toISOString(),
@@ -26,6 +26,14 @@ class ExportService {
       blob,
       `boardinfluence-export-${formatDate(new Date())}.json`
     );
+  }
+
+  exportCSV(influencers: Influencer[]): void {
+    this.exportInfluencersToCSV(influencers);
+  }
+
+  exportToJSON(influencers: Influencer[], games: Game[]): void {
+    this.exportJSON(games, influencers);
   }
 
   exportInfluencersToCSV(influencers: Influencer[]): void {

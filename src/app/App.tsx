@@ -1,9 +1,26 @@
 import { useEffect } from 'react';
 import { useStore } from '@/store';
 import { storageService } from '@/services/storage/LocalStorageService';
+import { MainLayout } from '@/components/layout';
+import { Dashboard } from '@/features/dashboard';
+import { Games } from '@/features/games';
+import { Influencers } from '@/features/influencers';
+import { Onboarding } from '@/features/onboarding';
+import { SearchModal } from '@/features/search';
+import { ImportModal } from '@/features/import';
 
 export function App() {
-  const { setGames, setInfluencers, setShowOnboarding } = useStore();
+  const {
+    setGames,
+    setInfluencers,
+    setShowOnboarding,
+    currentTab,
+    showOnboarding,
+    showSearchModal,
+    showImportModal,
+    setShowSearchModal,
+    setShowImportModal,
+  } = useStore();
 
   useEffect(() => {
     // Load data from localStorage
@@ -23,33 +40,36 @@ export function App() {
     loadData();
   }, [setGames, setInfluencers, setShowOnboarding]);
 
-  return (
-    <div className="min-h-screen">
-      <header className="card mx-4 my-6 animate-slide-down">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="text-4xl">🎲</div>
-            <div>
-              <h1 className="text-3xl font-bold font-mono bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                BoardInfluence
-              </h1>
-              <p className="text-sm text-text-medium font-mono">v3.0.0 - Architecture Modulaire</p>
-            </div>
-          </div>
-        </div>
-      </header>
+  const renderContent = () => {
+    switch (currentTab) {
+      case 'dashboard':
+        return <Dashboard />;
+      case 'games':
+        return <Games />;
+      case 'influencers':
+        return <Influencers />;
+      default:
+        return <Dashboard />;
+    }
+  };
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="card">
-          <h2 className="text-2xl font-bold mb-4">🚀 Projet Initialisé !</h2>
-          <p className="text-text-medium mb-4">
-            L'architecture modulaire professionnelle de BoardInfluence est prête.
-          </p>
-          <p className="text-text-medium">
-            Les composants, le store, les services et toute la structure sont en place.
-          </p>
-        </div>
-      </main>
-    </div>
+  return (
+    <MainLayout>
+      {renderContent()}
+
+      {/* Modals */}
+      <Onboarding
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+      />
+      <SearchModal
+        isOpen={showSearchModal}
+        onClose={() => setShowSearchModal(false)}
+      />
+      <ImportModal
+        isOpen={showImportModal}
+        onClose={() => setShowImportModal(false)}
+      />
+    </MainLayout>
   );
 }
