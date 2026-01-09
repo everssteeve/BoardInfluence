@@ -61,8 +61,12 @@ class LocalStorageService {
     return localStorage.getItem(STORAGE_KEYS.ONBOARDING) === 'true';
   }
 
+  setHasSeenOnboarding(value: boolean): void {
+    localStorage.setItem(STORAGE_KEYS.ONBOARDING, value ? 'true' : 'false');
+  }
+
   markOnboardingAsSeen(): void {
-    localStorage.setItem(STORAGE_KEYS.ONBOARDING, 'true');
+    this.setHasSeenOnboarding(true);
   }
 
   // Migration

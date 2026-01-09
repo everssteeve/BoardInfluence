@@ -9,6 +9,8 @@ export function Badge({
 }: BadgeProps) {
   const variantClasses = {
     default: 'bg-white/10 text-text-light border-border',
+    primary: 'bg-primary/20 text-primary border-primary',
+    secondary: 'bg-secondary/20 text-secondary border-secondary',
     success: 'bg-success/20 text-success border-success',
     warning: 'bg-accent/20 text-accent border-accent',
     danger: 'bg-danger/20 text-danger border-danger',
