@@ -13,6 +13,8 @@ import { CampaignStatusChart } from './components/CampaignStatusChart';
 import { CampaignBudgetChart } from './components/CampaignBudgetChart';
 import { DeliverableCompletion } from './components/DeliverableCompletion';
 import { CampaignROIChart } from './components/CampaignROIChart';
+import { TimelineChart } from './components/TimelineChart';
+import { MonthlyBudgetChart } from './components/MonthlyBudgetChart';
 import { calculateInfluenceScore } from '@/utils/helpers/scoreHelpers';
 
 export function Dashboard() {
@@ -76,6 +78,17 @@ export function Dashboard() {
           color="success"
         />
       </div>
+
+      {/* Timeline Analytics */}
+      {(campaigns.length > 0 || influencers.length > 0 || games.length > 0) && (
+        <>
+          <h2 className="text-2xl font-bold">Growth & Budget Timeline</h2>
+          <div className="grid grid-cols-1 gap-6">
+            <TimelineChart />
+            {campaigns.length > 0 && <MonthlyBudgetChart />}
+          </div>
+        </>
+      )}
 
       {/* Influencer Analytics Charts */}
       {influencers.length > 0 && (

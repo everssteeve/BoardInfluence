@@ -1,9 +1,11 @@
 import { Game } from '@/types/models/Game';
 import { Influencer } from '@/types/models/Influencer';
+import { Campaign } from '@/types/models/Campaign';
 
 const STORAGE_KEYS = {
   GAMES: 'boardinfluence_games',
   INFLUENCERS: 'boardinfluence_influencers',
+  CAMPAIGNS: 'boardinfluence_campaigns',
   VERSION: 'boardinfluence_version',
   ONBOARDING: 'boardinfluence_onboarding_seen',
 } as const;
@@ -53,6 +55,28 @@ class LocalStorageService {
     } catch (error) {
       console.error('Error saving influencers:', error);
       throw new Error('Failed to save influencers');
+    }
+  }
+
+  // Campaigns
+  async getCampaigns(): Promise<Campaign[]> {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.CAMPAIGNS);
+      if (!data) return [];
+      return JSON.parse(data);
+    } catch (error) {
+      console.error('Error loading campaigns:', error);
+      return [];
+    }
+  }
+
+  async saveCampaigns(campaigns: Campaign[]): Promise<void> {
+    try {
+      localStorage.setItem(STORAGE_KEYS.CAMPAIGNS, JSON.stringify(campaigns));
+      this.saveVersion();
+    } catch (error) {
+      console.error('Error saving campaigns:', error);
+      throw new Error('Failed to save campaigns');
     }
   }
 

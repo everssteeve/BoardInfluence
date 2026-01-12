@@ -2,7 +2,8 @@ import { Card } from '@/components/common/Card';
 import { Badge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { Influencer } from '@/types/models/Influencer';
-import { Edit, Trash2, ExternalLink, MapPin, DollarSign, TrendingUp } from 'lucide-react';
+import { Edit, Trash2, ExternalLink, MapPin, DollarSign, TrendingUp, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { formatNumber } from '@/utils/formatters/numberFormatter';
 import { calculateInfluenceScore } from '@/utils/helpers/scoreHelpers';
 
@@ -13,6 +14,7 @@ interface InfluencerCardProps {
 }
 
 export function InfluencerCard({ influencer, onEdit, onDelete }: InfluencerCardProps) {
+  const navigate = useNavigate();
   const score = calculateInfluenceScore(influencer);
 
   const availabilityColor = {
@@ -126,13 +128,20 @@ export function InfluencerCard({ influencer, onEdit, onDelete }: InfluencerCardP
 
       <div className="flex gap-2 pt-4 border-t border-surface-darker">
         <Button
+          variant="primary"
+          size="sm"
+          onClick={() => navigate(`/influencers/${influencer.id}`)}
+          className="flex-1"
+        >
+          <Eye className="w-4 h-4 mr-2" />
+          Voir
+        </Button>
+        <Button
           variant="secondary"
           size="sm"
           onClick={() => onEdit(influencer)}
-          className="flex-1"
         >
-          <Edit className="w-4 h-4 mr-2" />
-          Modifier
+          <Edit className="w-4 h-4" />
         </Button>
         <Button
           variant="danger"
