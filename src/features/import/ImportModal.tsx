@@ -11,7 +11,7 @@ interface ImportModalProps {
 }
 
 export function ImportModal({ isOpen, onClose }: ImportModalProps) {
-  const { setGames, setInfluencers, showAlert } = useStore();
+  const { setGames, setInfluencers, setCampaigns, showAlert } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -35,9 +35,15 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
       // Import data
       setGames(data.games);
       setInfluencers(data.influencers);
+      if (data.campaigns && data.campaigns.length > 0) {
+        setCampaigns(data.campaigns);
+      }
 
+      const campaignMessage = data.campaigns && data.campaigns.length > 0
+        ? `, ${data.campaigns.length} campagne(s)`
+        : '';
       showAlert(
-        `Import réussi ! ${data.games.length} jeu(x) et ${data.influencers.length} influenceur(s) importé(s)`,
+        `Import réussi ! ${data.games.length} jeu(x), ${data.influencers.length} influenceur(s)${campaignMessage} importé(s)`,
         'success'
       );
       onClose();
@@ -136,7 +142,8 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
   "version": "3.0.0",
   "exportDate": "2024-01-01",
   "games": [...],
-  "influencers": [...]
+  "influencers": [...],
+  "campaigns": [...] (optionnel)
 }`}
           </pre>
         </div>

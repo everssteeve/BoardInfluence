@@ -4,11 +4,11 @@ import { useStore } from '@/store';
 import { exportService } from '@/services/export/ExportService';
 
 export function Header() {
-  const { setShowSearchModal, setShowImportModal, games, influencers, showAlert } = useStore();
+  const { setShowSearchModal, setShowImportModal, games, influencers, campaigns, showAlert } = useStore();
 
   const handleExportJSON = () => {
     try {
-      exportService.exportJSON(games, influencers);
+      exportService.exportJSON(games, influencers, campaigns);
       showAlert('Export JSON réussi !', 'success');
     } catch (error) {
       showAlert('Erreur lors de l\'export JSON', 'error');
@@ -18,9 +18,18 @@ export function Header() {
   const handleExportCSV = () => {
     try {
       exportService.exportCSV(influencers);
-      showAlert('Export CSV réussi !', 'success');
+      showAlert('Export CSV Influenceurs réussi !', 'success');
     } catch (error) {
       showAlert('Erreur lors de l\'export CSV', 'error');
+    }
+  };
+
+  const handleExportCampaignsCSV = () => {
+    try {
+      exportService.exportCampaignsToCSV(campaigns, games, influencers);
+      showAlert('Export CSV Campagnes réussi !', 'success');
+    } catch (error) {
+      showAlert('Erreur lors de l\'export CSV campagnes', 'error');
     }
   };
 
@@ -52,18 +61,24 @@ export function Header() {
               <Download className="w-4 h-4 mr-2" />
               Export
             </Button>
-            <div className="absolute right-0 mt-2 w-48 card hidden group-hover:block z-50 shadow-lg">
+            <div className="absolute right-0 mt-2 w-56 card hidden group-hover:block z-50 shadow-lg">
               <button
                 onClick={handleExportJSON}
                 className="w-full text-left px-4 py-2 hover:bg-surface-darker rounded transition-colors"
               >
-                Export JSON
+                Export JSON (complet)
               </button>
               <button
                 onClick={handleExportCSV}
                 className="w-full text-left px-4 py-2 hover:bg-surface-darker rounded transition-colors"
               >
-                Export CSV
+                Export CSV Influenceurs
+              </button>
+              <button
+                onClick={handleExportCampaignsCSV}
+                className="w-full text-left px-4 py-2 hover:bg-surface-darker rounded transition-colors"
+              >
+                Export CSV Campagnes
               </button>
             </div>
           </div>
