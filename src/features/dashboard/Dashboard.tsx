@@ -5,6 +5,10 @@ import { StatsCard } from './components/StatsCard';
 import { TopInfluencers } from './components/TopInfluencers';
 import { QuickActions } from './components/QuickActions';
 import { RecentActivity } from './components/RecentActivity';
+import { PlatformDistribution } from './components/PlatformDistribution';
+import { EngagementChart } from './components/EngagementChart';
+import { PricingAnalytics } from './components/PricingAnalytics';
+import { AvailabilityStatus } from './components/AvailabilityStatus';
 import { calculateInfluenceScore } from '@/utils/helpers/scoreHelpers';
 
 export function Dashboard() {
@@ -68,6 +72,16 @@ export function Dashboard() {
           color="success"
         />
       </div>
+
+      {/* Analytics Charts */}
+      {influencers.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <PlatformDistribution influencers={influencers} />
+          <EngagementChart influencers={influencers} />
+          <PricingAnalytics influencers={influencers} />
+          <AvailabilityStatus influencers={influencers} />
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

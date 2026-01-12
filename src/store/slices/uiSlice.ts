@@ -8,7 +8,7 @@ export interface Alert {
 }
 
 export interface UIState {
-  currentTab: 'dashboard' | 'games' | 'influencers';
+  currentTab: 'dashboard' | 'games' | 'influencers' | 'campaigns';
   showSearchModal: boolean;
   showImportModal: boolean;
   showOnboarding: boolean;

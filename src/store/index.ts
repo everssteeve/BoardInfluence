@@ -3,8 +3,9 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { GamesSlice, createGamesSlice } from './slices/gamesSlice';
 import { InfluencersSlice, createInfluencersSlice } from './slices/influencersSlice';
 import { UISlice, createUISlice } from './slices/uiSlice';
+import { CampaignsSlice, createCampaignsSlice } from './slices/campaignsSlice';
 
-export type StoreState = GamesSlice & InfluencersSlice & UISlice;
+export type StoreState = GamesSlice & InfluencersSlice & UISlice & CampaignsSlice;
 
 export const useStore = create<StoreState>()(
   persist(
@@ -12,6 +13,7 @@ export const useStore = create<StoreState>()(
       ...createGamesSlice(...a),
       ...createInfluencersSlice(...a),
       ...createUISlice(...a),
+      ...createCampaignsSlice(...a),
     }),
     {
       name: 'boardinfluence-storage',
@@ -19,6 +21,7 @@ export const useStore = create<StoreState>()(
       partialize: (state) => ({
         games: state.games,
         influencers: state.influencers,
+        campaigns: state.campaigns,
       }),
     }
   )

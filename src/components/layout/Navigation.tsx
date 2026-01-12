@@ -1,8 +1,8 @@
-import { LayoutDashboard, Gamepad2, Users } from 'lucide-react';
+import { LayoutDashboard, Gamepad2, Users, Target } from 'lucide-react';
 import { useStore } from '@/store';
 import clsx from 'clsx';
 
-type Tab = 'dashboard' | 'games' | 'influencers';
+type Tab = 'dashboard' | 'games' | 'influencers' | 'campaigns';
 
 interface TabItem {
   id: Tab;
@@ -25,6 +25,11 @@ const tabs: TabItem[] = [
     id: 'influencers',
     label: 'Influenceurs',
     icon: <Users className="w-5 h-5" />,
+  },
+  {
+    id: 'campaigns',
+    label: 'Campagnes',
+    icon: <Target className="w-5 h-5" />,
   },
 ];
 
