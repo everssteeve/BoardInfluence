@@ -11,7 +11,8 @@
 
 - 🎯 **Architecture Modulaire** - Structure professionnelle et maintenable
 - 🚀 **Performance Optimale** - Build Vite ultra-rapide
-- 💾 **Gestion d'État** - Zustand avec persistence localStorage
+- 🔐 **Authentification Multi-utilisateurs** - Supabase Auth avec isolation des données
+- 💾 **Base de Données Cloud** - PostgreSQL avec Row Level Security
 - 🎨 **UI Moderne** - Tailwind CSS + Radix UI
 - 📝 **TypeScript** - Type-safe à 100%
 - 🧪 **Tests** - Vitest + Testing Library
@@ -39,6 +40,48 @@ npm run lint
 ```
 
 L'application sera disponible sur [http://localhost:3000](http://localhost:3000)
+
+## 🔐 Configuration Supabase (Authentification Multi-utilisateurs)
+
+BoardInfluence v3.0 utilise Supabase pour l'authentification et le stockage des données. Chaque utilisateur a ses propres données isolées grâce à Row Level Security (RLS).
+
+### Installation Rapide
+
+1. **Créer un projet Supabase**
+   - Allez sur https://app.supabase.com
+   - Créez un nouveau projet
+   - Attendez que le projet soit initialisé (~2 min)
+
+2. **Configurer les variables d'environnement**
+   ```bash
+   cp .env.example .env
+   ```
+
+   Éditez `.env` avec vos clés Supabase (Settings → API):
+   ```env
+   VITE_SUPABASE_URL=https://votre-projet.supabase.co
+   VITE_SUPABASE_ANON_KEY=votre_clé_anon_key
+   ```
+
+3. **Exécuter les migrations SQL**
+   - Dans le dashboard Supabase, allez dans **SQL Editor**
+   - Copiez le contenu de `supabase/migrations/001_initial_schema.sql`
+   - Exécutez la migration (bouton "Run")
+
+4. **Redémarrer l'application**
+   ```bash
+   npm run dev
+   ```
+
+### Ce que cela apporte
+
+- ✅ **Authentification sécurisée** avec email/password
+- ✅ **Isolation des données** - chaque utilisateur ne voit que ses données
+- ✅ **Synchronisation cloud** - accès depuis n'importe où
+- ✅ **Row Level Security** - sécurité au niveau base de données
+- ✅ **Collaboration future** - prêt pour le multi-utilisateur
+
+📖 **Guide détaillé** : Voir `supabase/SETUP.md`
 
 ## 📁 Structure du Projet
 
@@ -87,7 +130,9 @@ src/
 ### State & Data
 - **State Management:** Zustand 4.4
 - **Data Fetching:** TanStack Query 5.0
-- **Storage:** LocalStorage avec persistence
+- **Database:** Supabase (PostgreSQL)
+- **Authentication:** Supabase Auth
+- **Storage:** Cloud + LocalStorage fallback
 - **Validation:** Zod 3.22
 
 ### UI & Styling
@@ -276,11 +321,13 @@ Les contributions sont bienvenues ! Pour contribuer :
 
 ## 📝 Roadmap
 
-### v3.1 - Q1 2026
-- [ ] Authentification utilisateur
-- [ ] Base de données cloud (Firebase/Supabase)
-- [ ] Collaboration multi-utilisateur
-- [ ] Notifications en temps réel
+### v3.1 - Q1 2026 ✅ (Sprint 6 Completed)
+- [x] Authentification utilisateur
+- [x] Base de données cloud (Supabase)
+- [x] Isolation des données multi-utilisateur (RLS)
+- [x] Profils utilisateurs
+- [ ] Collaboration multi-utilisateur (v3.2)
+- [ ] Notifications en temps réel (v3.2)
 
 ### v3.2 - Q2 2026
 - [ ] API publique BoardGameGeek

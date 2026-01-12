@@ -1,5 +1,6 @@
 export interface Game {
   id: string;
+  userId: string;
   name: string;
   year: string;
   editor: string;
@@ -12,7 +13,7 @@ export interface Game {
   updatedAt: string;
 }
 
-export type GameFormData = Omit<Game, 'id' | 'createdAt' | 'updatedAt' | 'source'>;
+export type GameFormData = Omit<Game, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'source'>;
 
 export interface GameFilters {
   search: string;

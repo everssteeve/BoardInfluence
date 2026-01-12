@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useStore } from '@/store';
 import { storageService } from '@/services/storage/LocalStorageService';
 import { MainLayout } from '@/components/layout';
@@ -13,8 +15,10 @@ import { Reports } from '@/features/reports';
 import { Onboarding } from '@/features/onboarding';
 import { SearchModal } from '@/features/search';
 import { ImportModal } from '@/features/import';
+import { Login, Signup } from '@/features/auth';
+import { UserProfile } from '@/features/profile';
 
-export function App() {
+function AppContent() {
   const {
     setGames,
     setInfluencers,
@@ -48,33 +52,56 @@ export function App() {
   }, [setGames, setInfluencers, setCampaigns, setShowOnboarding]);
 
   return (
-    <BrowserRouter>
-      <MainLayout>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/games" element={<Games />} />
-          <Route path="/influencers" element={<Influencers />} />
-          <Route path="/influencers/:id" element={<InfluencerProfile />} />
-          <Route path="/campaigns" element={<Campaigns />} />
-          <Route path="/campaigns/:id" element={<CampaignDetail />} />
-          <Route path="/reports" element={<Reports />} />
-        </Routes>
+    <Routes>
+      {/* Public routes */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-        {/* Modals */}
-        <Onboarding
-          isOpen={showOnboarding}
-          onClose={() => setShowOnboarding(false)}
-        />
-        <SearchModal
-          isOpen={showSearchModal}
-          onClose={() => setShowSearchModal(false)}
-        />
-        <ImportModal
-          isOpen={showImportModal}
-          onClose={() => setShowImportModal(false)}
-        />
-      </MainLayout>
+      {/* Protected routes */}
+      <Route
+        path="/*"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <Routes>
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/games" element={<Games />} />
+                <Route path="/influencers" element={<Influencers />} />
+                <Route path="/influencers/:id" element={<InfluencerProfile />} />
+                <Route path="/campaigns" element={<Campaigns />} />
+                <Route path="/campaigns/:id" element={<CampaignDetail />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/profile" element={<UserProfile />} />
+              </Routes>
+
+              {/* Modals */}
+              <Onboarding
+                isOpen={showOnboarding}
+                onClose={() => setShowOnboarding(false)}
+              />
+              <SearchModal
+                isOpen={showSearchModal}
+                onClose={() => setShowSearchModal(false)}
+              />
+              <ImportModal
+                isOpen={showImportModal}
+                onClose={() => setShowImportModal(false)}
+              />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
+}
+
+export function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

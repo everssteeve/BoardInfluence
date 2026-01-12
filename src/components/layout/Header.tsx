@@ -1,9 +1,13 @@
-import { Download, Upload, Search } from 'lucide-react';
+import { Download, Upload, Search, User, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/common/Button';
 import { useStore } from '@/store';
+import { useAuth } from '@/contexts/AuthContext';
 import { exportService } from '@/services/export/ExportService';
 
 export function Header() {
+  const navigate = useNavigate();
+  const { profile, logout } = useAuth();
   const { setShowSearchModal, setShowImportModal, games, influencers, campaigns, showAlert } = useStore();
 
   const handleExportJSON = () => {
@@ -31,6 +35,15 @@ export function Header() {
     } catch (error) {
       showAlert('Erreur lors de l\'export CSV campagnes', 'error');
     }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
+
+  const getUserInitial = () => {
+    return profile?.name?.charAt(0).toUpperCase() || 'U';
   };
 
   return (
@@ -91,6 +104,36 @@ export function Header() {
             <Upload className="w-4 h-4 mr-2" />
             Import
           </Button>
+
+          {/* User menu */}
+          <div className="relative group ml-2">
+            <button className="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface-darker hover:bg-surface-darkest transition-colors">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
+                {getUserInitial()}
+              </div>
+              <span className="text-sm font-medium hidden md:block">{profile?.name}</span>
+            </button>
+            <div className="absolute right-0 mt-2 w-56 card hidden group-hover:block z-50 shadow-lg">
+              <div className="px-4 py-3 border-b border-border">
+                <p className="text-sm font-medium text-text">{profile?.name}</p>
+                <p className="text-xs text-text-medium">{profile?.email}</p>
+              </div>
+              <button
+                onClick={() => navigate('/profile')}
+                className="w-full text-left px-4 py-2 hover:bg-surface-darker rounded transition-colors flex items-center gap-2"
+              >
+                <User className="w-4 h-4" />
+                Mon Profil
+              </button>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 hover:bg-surface-darker rounded transition-colors flex items-center gap-2 text-danger"
+              >
+                <LogOut className="w-4 h-4" />
+                Déconnexion
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </header>
