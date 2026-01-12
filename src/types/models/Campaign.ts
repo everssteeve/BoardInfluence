@@ -13,6 +13,7 @@ export interface Deliverable {
 
 export interface Campaign {
   id: string;
+  userId: string;
   name: string;
   gameId: string;
   influencerIds: string[];
@@ -26,6 +27,8 @@ export interface Campaign {
   createdAt: string;
   updatedAt: string;
 }
+
+export type CampaignFormData = Omit<Campaign, 'id' | 'userId' | 'createdAt' | 'updatedAt'>;
 
 export interface CampaignFilters {
   search: string;

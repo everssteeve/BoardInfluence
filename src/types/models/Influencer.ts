@@ -29,6 +29,7 @@ export type Availability = 'Disponible' | 'Saturé' | 'Ne répond plus';
 
 export interface Influencer {
   id: string;
+  userId: string;
   name: string;
   platform: Platform;
   url: string;
@@ -46,7 +47,7 @@ export interface Influencer {
   updatedAt: string;
 }
 
-export type InfluencerFormData = Omit<Influencer, 'id' | 'createdAt' | 'updatedAt' | 'games'>;
+export type InfluencerFormData = Omit<Influencer, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'games'>;
 
 export interface InfluencerFilters {
   search: string;
