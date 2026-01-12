@@ -5,6 +5,7 @@ import { MainLayout } from '@/components/layout';
 import { Dashboard } from '@/features/dashboard';
 import { Games } from '@/features/games';
 import { Influencers } from '@/features/influencers';
+import { Campaigns } from '@/features/campaigns/Campaigns';
 import { Onboarding } from '@/features/onboarding';
 import { SearchModal } from '@/features/search';
 import { ImportModal } from '@/features/import';
@@ -48,6 +49,8 @@ export function App() {
         return <Games />;
       case 'influencers':
         return <Influencers />;
+      case 'campaigns':
+        return <Campaigns />;
       default:
         return <Dashboard />;
     }
