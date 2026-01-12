@@ -9,10 +9,14 @@ import { PlatformDistribution } from './components/PlatformDistribution';
 import { EngagementChart } from './components/EngagementChart';
 import { PricingAnalytics } from './components/PricingAnalytics';
 import { AvailabilityStatus } from './components/AvailabilityStatus';
+import { CampaignStatusChart } from './components/CampaignStatusChart';
+import { CampaignBudgetChart } from './components/CampaignBudgetChart';
+import { DeliverableCompletion } from './components/DeliverableCompletion';
+import { CampaignROIChart } from './components/CampaignROIChart';
 import { calculateInfluenceScore } from '@/utils/helpers/scoreHelpers';
 
 export function Dashboard() {
-  const { games, influencers } = useStore();
+  const { games, influencers, campaigns } = useStore();
 
   const stats = useMemo(() => {
     const scores = influencers.map((inf) => calculateInfluenceScore(inf));
@@ -73,14 +77,30 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Analytics Charts */}
+      {/* Influencer Analytics Charts */}
       {influencers.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <PlatformDistribution influencers={influencers} />
-          <EngagementChart influencers={influencers} />
-          <PricingAnalytics influencers={influencers} />
-          <AvailabilityStatus influencers={influencers} />
-        </div>
+        <>
+          <h2 className="text-2xl font-bold">Analytics Influenceurs</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PlatformDistribution influencers={influencers} />
+            <EngagementChart influencers={influencers} />
+            <PricingAnalytics influencers={influencers} />
+            <AvailabilityStatus influencers={influencers} />
+          </div>
+        </>
+      )}
+
+      {/* Campaign Analytics Charts */}
+      {campaigns.length > 0 && (
+        <>
+          <h2 className="text-2xl font-bold mt-6">Analytics Campagnes</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <CampaignStatusChart campaigns={campaigns} />
+            <CampaignBudgetChart campaigns={campaigns} />
+            <DeliverableCompletion campaigns={campaigns} />
+            <CampaignROIChart campaigns={campaigns} games={games} />
+          </div>
+        </>
       )}
 
       {/* Main Content */}

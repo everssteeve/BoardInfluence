@@ -5,11 +5,11 @@ import { Plus, Search, Upload, Download } from 'lucide-react';
 import { exportService } from '@/services/export/ExportService';
 
 export function QuickActions() {
-  const { setCurrentTab, setShowSearchModal, setShowImportModal, games, influencers, showAlert } = useStore();
+  const { setCurrentTab, setShowSearchModal, setShowImportModal, games, influencers, campaigns, showAlert } = useStore();
 
   const handleExportJSON = () => {
     try {
-      exportService.exportJSON(games, influencers);
+      exportService.exportJSON(games, influencers, campaigns);
       showAlert('Export JSON réussi !', 'success');
     } catch (error) {
       showAlert('Erreur lors de l\'export JSON', 'error');

@@ -1,11 +1,13 @@
 import { Game } from '@/types/models/Game';
 import { Influencer } from '@/types/models/Influencer';
+import { Campaign } from '@/types/models/Campaign';
 
 interface ImportData {
   version?: string;
   exportDate?: string;
   influencers: Influencer[];
   games: Game[];
+  campaigns?: Campaign[];
 }
 
 class ImportService {
@@ -57,6 +59,15 @@ class ImportService {
         errors.push(`Jeu ${index + 1}: nom ou éditeur manquant`);
       }
     });
+
+    // Validate campaigns (optional for backwards compatibility)
+    if (data.campaigns && Array.isArray(data.campaigns)) {
+      data.campaigns.forEach((campaign, index) => {
+        if (!campaign.name || !campaign.gameId || !campaign.status) {
+          errors.push(`Campagne ${index + 1}: nom, jeu ou statut manquant`);
+        }
+      });
+    }
 
     return errors;
   }
