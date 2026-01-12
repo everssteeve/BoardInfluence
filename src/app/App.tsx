@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useStore } from '@/store';
 import { storageService } from '@/services/storage/LocalStorageService';
 import { MainLayout } from '@/components/layout';
@@ -6,6 +7,9 @@ import { Dashboard } from '@/features/dashboard';
 import { Games } from '@/features/games';
 import { Influencers } from '@/features/influencers';
 import { Campaigns } from '@/features/campaigns/Campaigns';
+import { CampaignDetail } from '@/features/campaigns/CampaignDetail';
+import { InfluencerProfile } from '@/features/influencers/InfluencerProfile';
+import { Reports } from '@/features/reports';
 import { Onboarding } from '@/features/onboarding';
 import { SearchModal } from '@/features/search';
 import { ImportModal } from '@/features/import';
@@ -14,8 +18,8 @@ export function App() {
   const {
     setGames,
     setInfluencers,
+    setCampaigns,
     setShowOnboarding,
-    currentTab,
     showOnboarding,
     showSearchModal,
     showImportModal,
@@ -28,9 +32,11 @@ export function App() {
     const loadData = async () => {
       const games = await storageService.getGames();
       const influencers = await storageService.getInfluencers();
+      const campaigns = await storageService.getCampaigns();
 
       setGames(games);
       setInfluencers(influencers);
+      setCampaigns(campaigns);
 
       // Show onboarding if first time
       if (!storageService.hasSeenOnboarding() && games.length === 0 && influencers.length === 0) {
@@ -39,40 +45,36 @@ export function App() {
     };
 
     loadData();
-  }, [setGames, setInfluencers, setShowOnboarding]);
-
-  const renderContent = () => {
-    switch (currentTab) {
-      case 'dashboard':
-        return <Dashboard />;
-      case 'games':
-        return <Games />;
-      case 'influencers':
-        return <Influencers />;
-      case 'campaigns':
-        return <Campaigns />;
-      default:
-        return <Dashboard />;
-    }
-  };
+  }, [setGames, setInfluencers, setCampaigns, setShowOnboarding]);
 
   return (
-    <MainLayout>
-      {renderContent()}
+    <BrowserRouter>
+      <MainLayout>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/games" element={<Games />} />
+          <Route path="/influencers" element={<Influencers />} />
+          <Route path="/influencers/:id" element={<InfluencerProfile />} />
+          <Route path="/campaigns" element={<Campaigns />} />
+          <Route path="/campaigns/:id" element={<CampaignDetail />} />
+          <Route path="/reports" element={<Reports />} />
+        </Routes>
 
-      {/* Modals */}
-      <Onboarding
-        isOpen={showOnboarding}
-        onClose={() => setShowOnboarding(false)}
-      />
-      <SearchModal
-        isOpen={showSearchModal}
-        onClose={() => setShowSearchModal(false)}
-      />
-      <ImportModal
-        isOpen={showImportModal}
-        onClose={() => setShowImportModal(false)}
-      />
-    </MainLayout>
+        {/* Modals */}
+        <Onboarding
+          isOpen={showOnboarding}
+          onClose={() => setShowOnboarding(false)}
+        />
+        <SearchModal
+          isOpen={showSearchModal}
+          onClose={() => setShowSearchModal(false)}
+        />
+        <ImportModal
+          isOpen={showImportModal}
+          onClose={() => setShowImportModal(false)}
+        />
+      </MainLayout>
+    </BrowserRouter>
   );
 }

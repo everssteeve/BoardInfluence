@@ -1,4 +1,5 @@
-import { Calendar, Edit, Trash2, Users, DollarSign, Target } from 'lucide-react';
+import { Calendar, Edit, Trash2, Users, DollarSign, Target, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/common/Card/Card';
 import { Button } from '@/components/common/Button/Button';
 import { Badge } from '@/components/common/Badge/Badge';
@@ -30,6 +31,7 @@ const STATUS_LABELS = {
 };
 
 export function CampaignCard({ campaign, game, influencers, onEdit, onDelete }: CampaignCardProps) {
+  const navigate = useNavigate();
   const completedDeliverables = campaign.deliverables.filter((d) => d.completed).length;
   const totalDeliverables = campaign.deliverables.length;
   const progress = totalDeliverables > 0 ? (completedDeliverables / totalDeliverables) * 100 : 0;
@@ -44,6 +46,9 @@ export function CampaignCard({ campaign, game, influencers, onEdit, onDelete }: 
           </Badge>
         </div>
         <div className="flex gap-2">
+          <Button onClick={() => navigate(`/campaigns/${campaign.id}`)} variant="secondary" size="sm">
+            <Eye size={16} />
+          </Button>
           <Button onClick={onEdit} variant="secondary" size="sm">
             <Edit size={16} />
           </Button>
