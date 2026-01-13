@@ -4,9 +4,25 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    'Missing Supabase environment variables. Please check your .env file and ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set.'
-  );
+  const errorMessage = `
+Missing Supabase environment variables in production build.
+
+For developers: Ensure the following GitHub Secrets are set in your repository:
+- VITE_SUPABASE_URL
+- VITE_SUPABASE_ANON_KEY
+
+To set GitHub Secrets:
+1. Go to: https://github.com/everssteeve/BoardInfluence/settings/secrets/actions
+2. Click "New repository secret"
+3. Add VITE_SUPABASE_URL with your Supabase project URL
+4. Add VITE_SUPABASE_ANON_KEY with your Supabase anon key
+
+Current values:
+- VITE_SUPABASE_URL: ${supabaseUrl || 'undefined'}
+- VITE_SUPABASE_ANON_KEY: ${supabaseAnonKey ? '[REDACTED - length: ' + supabaseAnonKey.length + ']' : 'undefined'}
+  `.trim();
+
+  throw new Error(errorMessage);
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {

@@ -17,10 +17,27 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate Environment Variables
+        run: |
+          echo "Checking if required secrets are set..."
+          if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ]; then
+            echo "❌ ERROR: VITE_SUPABASE_URL secret is not set"
+            echo "Please set it in: https://github.com/everssteeve/BoardInfluence/settings/secrets/actions"
+            exit 1
+          fi
+          if [ -z "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ]; then
+            echo "❌ ERROR: VITE_SUPABASE_ANON_KEY secret is not set"
+            echo "Please set it in: https://github.com/everssteeve/BoardInfluence/settings/secrets/actions"
+            exit 1
+          fi
+          echo "✅ All required secrets are set"
+          echo "VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}"
+          echo "VITE_SUPABASE_ANON_KEY: [REDACTED]"
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
