@@ -35,12 +35,35 @@ Pour que la réinitialisation de mot de passe fonctionne correctement, vous deve
 
 ## Configuration des secrets GitHub
 
+⚠️ **IMPORTANT** : Cette étape est **OBLIGATOIRE** pour que l'application fonctionne en production.
+
 Pour que le workflow GitHub Actions fonctionne correctement, vous devez configurer les secrets suivants dans votre repository :
 
-1. Allez sur https://github.com/everssteeve/BoardInfluence/settings/secrets/actions
-2. Ajoutez les secrets suivants :
-   - `VITE_SUPABASE_URL` : L'URL de votre projet Supabase (https://hdkxoilanexazvctckee.supabase.co)
-   - `VITE_SUPABASE_ANON_KEY` : La clé anonyme de votre projet Supabase
+### Étapes détaillées :
+
+1. **Récupérez vos identifiants Supabase** :
+   - Allez sur https://app.supabase.com
+   - Sélectionnez votre projet BoardInfluence
+   - Allez dans **Settings** → **API**
+   - Copiez la **Project URL** (exemple: `https://hdkxoilanexazvctckee.supabase.co`)
+   - Copiez la **anon/public key** (c'est une longue clé JWT qui commence par `eyJ...`)
+
+2. **Configurez les secrets GitHub** :
+   - Allez sur https://github.com/everssteeve/BoardInfluence/settings/secrets/actions
+   - Cliquez sur **"New repository secret"**
+   - Ajoutez le premier secret :
+     - Name: `VITE_SUPABASE_URL`
+     - Secret: Collez votre Project URL (exemple: `https://hdkxoilanexazvctckee.supabase.co`)
+     - Cliquez sur **"Add secret"**
+   - Ajoutez le deuxième secret :
+     - Name: `VITE_SUPABASE_ANON_KEY`
+     - Secret: Collez votre anon/public key (la longue clé JWT)
+     - Cliquez sur **"Add secret"**
+
+3. **Redéployez l'application** :
+   - Après avoir configuré les secrets, déclenchez un nouveau déploiement
+   - Option 1: Faites un push vers la branche `main`
+   - Option 2: Allez dans l'onglet **Actions** et relancez manuellement le workflow "Build and Deploy to GitHub Pages"
 
 ## Test de la fonctionnalité
 
@@ -63,3 +86,41 @@ Pour que le workflow GitHub Actions fonctionne correctement, vous devez configur
   1. La variable `VITE_APP_URL` dans `.env.example`
   2. La variable `VITE_APP_URL` dans `.github/workflows/deploy.yml`
   3. Les Redirect URLs dans Supabase
+
+## Dépannage (Troubleshooting)
+
+### Erreur: "Missing Supabase environment variables" en production
+
+**Symptôme** : L'application affiche une erreur au chargement : `Uncaught Error: Missing Supabase environment variables`
+
+**Cause** : Les secrets GitHub ne sont pas configurés ou sont vides
+
+**Solution** :
+1. Vérifiez que les secrets sont bien configurés dans GitHub :
+   - Allez sur https://github.com/everssteeve/BoardInfluence/settings/secrets/actions
+   - Vérifiez que `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` existent
+   - Si non, suivez les instructions de la section "Configuration des secrets GitHub" ci-dessus
+
+2. Si les secrets existent mais l'erreur persiste :
+   - Vérifiez que les valeurs ne sont pas vides
+   - Supprimez les secrets existants et recréez-les
+   - Assurez-vous de copier la clé complète (la clé JWT est très longue, plusieurs centaines de caractères)
+
+3. Relancez le déploiement :
+   - Allez dans l'onglet **Actions** sur GitHub
+   - Cliquez sur le workflow "Build and Deploy to GitHub Pages"
+   - Cliquez sur **"Run workflow"** pour forcer un nouveau build
+
+4. Vérifiez les logs du workflow :
+   - Le nouveau workflow inclut une étape "Validate Environment Variables"
+   - Cette étape affichera un message clair si les secrets sont manquants
+   - Si les secrets sont présents, vous verrez : "✅ All required secrets are set"
+
+### Erreur: Échec du workflow GitHub Actions
+
+**Symptôme** : Le workflow "Build and Deploy to GitHub Pages" échoue
+
+**Solution** :
+- Consultez les logs du workflow dans l'onglet Actions
+- Cherchez l'étape "Validate Environment Variables"
+- Suivez les instructions affichées dans les logs

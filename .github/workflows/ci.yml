@@ -76,6 +76,12 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Note: In CI, we use dummy values just to verify the build works
+          # Production deployment uses actual secrets from GitHub Secrets
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://example.supabase.co' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bW15IiwiYW5vbiI6dHJ1ZX0.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' }}
+          VITE_APP_URL: https://everssteeve.github.io/BoardInfluence
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
