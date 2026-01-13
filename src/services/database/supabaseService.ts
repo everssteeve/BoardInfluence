@@ -7,6 +7,67 @@ import type { Game, Influencer, Campaign } from '@/types';
  */
 
 // =====================================================
+// HELPER FUNCTIONS
+// =====================================================
+
+/**
+ * Ensures that a profile exists for the given user ID.
+ * If the profile doesn't exist, it creates one using the auth.users data.
+ * This handles cases where the auto-create trigger didn't run or users existed before the trigger was added.
+ */
+async function ensureProfileExists(userId: string): Promise<void> {
+  try {
+    // Check if profile already exists
+    const { data: existingProfile, error: checkError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', userId)
+      .single();
+
+    // If profile exists, we're done
+    if (existingProfile) {
+      return;
+    }
+
+    // If error is something other than "not found", throw it
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Error checking for profile:', checkError);
+      throw checkError;
+    }
+
+    // Profile doesn't exist, create it
+    console.log('Profile not found for user', userId, '- creating one now');
+
+    // Get user data from auth.users
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      throw new Error('Unable to get user data to create profile');
+    }
+
+    // Create the profile
+    const { error: insertError } = await supabase
+      .from('profiles')
+      .insert({
+        id: userId,
+        email: user.email || '',
+        name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
+        company: user.user_metadata?.company || null,
+      });
+
+    if (insertError) {
+      console.error('Error creating profile:', insertError);
+      throw insertError;
+    }
+
+    console.log('Profile created successfully for user', userId);
+  } catch (error) {
+    console.error('Error in ensureProfileExists:', error);
+    throw error;
+  }
+}
+
+// =====================================================
 // GAMES
 // =====================================================
 export const gamesDB = {
@@ -42,6 +103,9 @@ export const gamesDB = {
   },
 
   async create(game: Omit<Game, 'id' | 'createdAt' | 'updatedAt'>, userId: string): Promise<Game> {
+    // Ensure profile exists before creating game
+    await ensureProfileExists(userId);
+
     const { data, error } = await supabase
       .from('games')
       .insert({
@@ -146,6 +210,9 @@ export const influencersDB = {
     influencer: Omit<Influencer, 'id' | 'createdAt' | 'updatedAt' | 'games'>,
     userId: string
   ): Promise<Influencer> {
+    // Ensure profile exists before creating influencer
+    await ensureProfileExists(userId);
+
     const { data, error } = await supabase
       .from('influencers')
       .insert({
@@ -258,6 +325,9 @@ export const campaignsDB = {
     campaign: Omit<Campaign, 'id' | 'createdAt' | 'updatedAt'>,
     userId: string
   ): Promise<Campaign> {
+    // Ensure profile exists before creating campaign
+    await ensureProfileExists(userId);
+
     const { data, error } = await supabase
       .from('campaigns')
       .insert({
