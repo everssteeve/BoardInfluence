@@ -7,10 +7,16 @@ export class AuthService {
    */
   async signup(data: SignupData): Promise<{ user: AuthUser | null; error: Error | null }> {
     try {
-      // Create auth user
+      // Create auth user with metadata (profile will be auto-created by trigger)
       const { data: authData, error: signupError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
+        options: {
+          data: {
+            name: data.name,
+            company: data.company || null,
+          },
+        },
       });
 
       if (signupError) {
@@ -19,18 +25,6 @@ export class AuthService {
 
       if (!authData.user) {
         return { user: null, error: new Error('Failed to create user') };
-      }
-
-      // Create user profile
-      const { error: profileError } = await supabase.from('profiles').insert({
-        id: authData.user.id,
-        email: data.email,
-        name: data.name,
-        company: data.company || null,
-      });
-
-      if (profileError) {
-        return { user: null, error: profileError };
       }
 
       return {

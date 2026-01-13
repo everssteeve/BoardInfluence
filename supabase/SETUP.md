@@ -42,6 +42,8 @@ VITE_SUPABASE_ANON_KEY=votre_clé_anon_key_ici
 
 ### 4. Exécuter les migrations de base de données
 
+#### Migration 1 : Schéma initial
+
 1. Dans le dashboard Supabase, allez dans **SQL Editor**
 2. Cliquez sur "New Query"
 3. Copiez le contenu du fichier `supabase/migrations/001_initial_schema.sql`
@@ -54,6 +56,19 @@ Cette migration va créer :
 - Table `influencers` pour les influenceurs
 - Table `campaigns` pour les campagnes
 - Toutes les policies RLS (Row Level Security) pour l'isolation des données
+
+#### Migration 2 : Création automatique des profils
+
+1. Dans le dashboard Supabase, allez dans **SQL Editor**
+2. Cliquez sur "New Query"
+3. Copiez le contenu du fichier `supabase/migrations/002_auto_create_profile.sql`
+4. Collez-le dans l'éditeur SQL
+5. Cliquez sur "Run" pour exécuter la migration
+
+Cette migration crée un trigger automatique qui :
+- Crée automatiquement un profil dans la table `profiles` lors de l'inscription
+- Utilise les métadonnées utilisateur (nom, entreprise) pour pré-remplir le profil
+- Résout les problèmes de permissions RLS lors de la création de compte
 
 ### 5. Configurer l'authentification par email
 
