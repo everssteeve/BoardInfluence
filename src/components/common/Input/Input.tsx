@@ -1,20 +1,24 @@
 import { InputProps } from '@/types/ui/components';
 import clsx from 'clsx';
+import { forwardRef } from 'react';
 
-export function Input({
-  label,
-  placeholder,
-  value,
-  onChange,
-  type = 'text',
-  error,
-  required = false,
-  disabled = false,
-  className,
-  icon,
-  autoFocus = false,
-  ...rest
-}: InputProps) {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  {
+    label,
+    placeholder,
+    value,
+    onChange,
+    type = 'text',
+    error,
+    required = false,
+    disabled = false,
+    className,
+    icon,
+    autoFocus = false,
+    ...rest
+  },
+  ref
+) {
   return (
     <div className={clsx('w-full', className)}>
       {label && (
@@ -29,6 +33,7 @@ export function Input({
           </div>
         )}
         <input
+          ref={ref}
           type={type}
           value={value}
           onChange={onChange}
@@ -46,4 +51,4 @@ export function Input({
       {error && <p className="mt-1 text-sm text-danger">{error}</p>}
     </div>
   );
-}
+});
