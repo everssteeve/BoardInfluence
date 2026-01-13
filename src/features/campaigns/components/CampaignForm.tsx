@@ -64,14 +64,14 @@ export function CampaignForm({ campaign, onClose }: CampaignFormProps) {
         ...formData,
         userId: user.id,
         deliverables,
-        endDate: formData.endDate || null,
+        ...(formData.endDate ? { endDate: formData.endDate } : {}),
       };
 
       if (campaign) {
         // Update existing campaign in Supabase first
-        const updatedCampaign = await campaignsDB.update(campaign.id, campaignData, user.id);
+        await campaignsDB.update(campaign.id, campaignData, user.id);
         // Then update local store
-        updateCampaign(campaign.id, updatedCampaign);
+        updateCampaign(campaign.id, campaignData);
         showAlert('Campagne modifiée avec succès !', 'success');
       } else {
         // Create new campaign in Supabase first

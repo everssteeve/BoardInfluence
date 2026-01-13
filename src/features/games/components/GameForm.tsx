@@ -80,7 +80,7 @@ export function GameForm({ isOpen, onClose, game }: GameFormProps) {
     try {
       if (game) {
         // Update existing game in Supabase first
-        const updatedGame = await gamesDB.update(game.id, formData, user.id);
+        await gamesDB.update(game.id, formData, user.id);
         // Then update local store
         updateGame(game.id, formData);
         showAlert('Jeu modifié avec succès !', 'success');
