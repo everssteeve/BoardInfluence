@@ -106,7 +106,7 @@ export function CampaignForm({ campaign, onClose }: CampaignFormProps) {
           label="Nom de la campagne"
           type="text"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
           required
         />
 
@@ -188,7 +188,7 @@ export function CampaignForm({ campaign, onClose }: CampaignFormProps) {
             label="Date de début"
             type="date"
             value={formData.startDate}
-            onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, startDate: e.target.value })}
             required
           />
 
@@ -196,7 +196,7 @@ export function CampaignForm({ campaign, onClose }: CampaignFormProps) {
             label="Date de fin (optionnelle)"
             type="date"
             value={formData.endDate}
-            onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, endDate: e.target.value })}
           />
         </div>
 

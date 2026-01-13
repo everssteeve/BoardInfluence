@@ -13,7 +13,7 @@ export function CampaignFilters() {
           type="text"
           placeholder="Rechercher..."
           value={campaignFilters.search}
-          onChange={(e) => setCampaignFilters({ search: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCampaignFilters({ search: e.target.value })}
           icon={<Search size={18} />}
         />
 

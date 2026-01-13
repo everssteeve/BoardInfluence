@@ -119,7 +119,7 @@ export function InfluencerForm({ isOpen, onClose, influencer }: InfluencerFormPr
           <Input
             label="Nom *"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Ex: Monsieur Phal"
             required
           />
@@ -145,7 +145,7 @@ export function InfluencerForm({ isOpen, onClose, influencer }: InfluencerFormPr
           label="URL de la chaîne/profil"
           type="url"
           value={formData.url}
-          onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, url: e.target.value })}
           placeholder="https://..."
         />
 
@@ -154,14 +154,14 @@ export function InfluencerForm({ isOpen, onClose, influencer }: InfluencerFormPr
             label="Abonnés"
             type="number"
             value={formData.subscribers}
-            onChange={(e) => setFormData({ ...formData, subscribers: parseInt(e.target.value) || 0 })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, subscribers: parseInt(e.target.value) || 0 })}
             placeholder="10000"
           />
 
           <Input
             label="Localisation"
             value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, location: e.target.value })}
             placeholder="Ex: France"
           />
         </div>

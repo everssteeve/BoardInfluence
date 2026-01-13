@@ -104,7 +104,7 @@ export function GameForm({ isOpen, onClose, game }: GameFormProps) {
         <Input
           label="Nom du jeu *"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
           placeholder="Ex: Wingspan"
           required
         />
@@ -113,7 +113,7 @@ export function GameForm({ isOpen, onClose, game }: GameFormProps) {
           <Input
             label="Éditeur *"
             value={formData.editor}
-            onChange={(e) => setFormData({ ...formData, editor: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, editor: e.target.value })}
             placeholder="Ex: Matagot"
             required
           />
@@ -122,7 +122,7 @@ export function GameForm({ isOpen, onClose, game }: GameFormProps) {
             label="Année"
             type="number"
             value={formData.year}
-            onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, year: e.target.value })}
             placeholder="2019"
           />
         </div>
@@ -131,14 +131,14 @@ export function GameForm({ isOpen, onClose, game }: GameFormProps) {
           <Input
             label="Joueurs"
             value={formData.players}
-            onChange={(e) => setFormData({ ...formData, players: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, players: e.target.value })}
             placeholder="1-5"
           />
 
           <Input
             label="Durée"
             value={formData.duration}
-            onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, duration: e.target.value })}
             placeholder="45-90 min"
           />
         </div>
@@ -162,7 +162,7 @@ export function GameForm({ isOpen, onClose, game }: GameFormProps) {
           label="Date de sortie"
           type="date"
           value={formData.releaseDate || ''}
-          onChange={(e) => setFormData({ ...formData, releaseDate: e.target.value || null })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, releaseDate: e.target.value || null })}
         />
 
         <div className="flex gap-3 pt-4">

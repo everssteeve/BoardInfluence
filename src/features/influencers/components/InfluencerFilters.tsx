@@ -39,7 +39,7 @@ export function InfluencerFilters() {
           <Input
             placeholder="Rechercher un influenceur..."
             value={influencerFilters.search}
-            onChange={(e) => setInfluencerFilters({ search: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInfluencerFilters({ search: e.target.value })}
             icon={<Search className="w-4 h-4" />}
           />
         </div>
@@ -123,7 +123,7 @@ export function InfluencerFilters() {
               label="Abonnés min"
               type="number"
               value={influencerFilters.minSubscribers}
-              onChange={(e) => setInfluencerFilters({ minSubscribers: parseInt(e.target.value) || 0 })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInfluencerFilters({ minSubscribers: parseInt(e.target.value) || 0 })}
               placeholder="0"
             />
 
