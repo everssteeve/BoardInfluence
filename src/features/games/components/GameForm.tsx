@@ -4,6 +4,7 @@ import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { Game, GameFormData } from '@/types/models/Game';
 import { useStore } from '@/store';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface GameFormProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ const GAME_TYPES = [
 
 export function GameForm({ isOpen, onClose, game }: GameFormProps) {
   const { addGame, updateGame, showAlert } = useStore();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState<GameFormData>({
     name: '',
@@ -73,9 +75,14 @@ export function GameForm({ isOpen, onClose, game }: GameFormProps) {
       updateGame(game.id, formData);
       showAlert('Jeu modifié avec succès !', 'success');
     } else {
+      if (!user) {
+        showAlert('Vous devez être connecté pour ajouter un jeu', 'error');
+        return;
+      }
       const newGame: Game = {
         ...formData,
         id: crypto.randomUUID(),
+        userId: user.id,
         source: 'manual',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

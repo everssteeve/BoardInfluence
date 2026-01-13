@@ -17,6 +17,7 @@ export function renderWithProviders(
 export function createMockGame(overrides = {}) {
   return {
     id: `game-${Math.random().toString(36).substr(2, 9)}`,
+    userId: 'test-user-id',
     name: 'Test Game',
     editor: 'Test Editor',
     year: '2024',
@@ -37,6 +38,7 @@ export function createMockGame(overrides = {}) {
 export function createMockInfluencer(overrides = {}) {
   return {
     id: `influencer-${Math.random().toString(36).substr(2, 9)}`,
+    userId: 'test-user-id',
     name: 'Test Influencer',
     platform: 'YouTube' as const,
     url: 'https://youtube.com/test',
@@ -62,6 +64,7 @@ export function createMockInfluencer(overrides = {}) {
 export function createMockCampaign(overrides = {}) {
   return {
     id: `campaign-${Math.random().toString(36).substr(2, 9)}`,
+    userId: 'test-user-id',
     name: 'Test Campaign',
     gameId: 'game-1',
     influencerIds: ['influencer-1'],
