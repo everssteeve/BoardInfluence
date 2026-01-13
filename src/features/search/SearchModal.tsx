@@ -65,7 +65,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         <Input
           placeholder="Rechercher dans les jeux et influenceurs..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
           icon={<Search className="w-4 h-4" />}
           autoFocus
         />

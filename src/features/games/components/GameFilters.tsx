@@ -35,7 +35,7 @@ export function GameFilters() {
           <Input
             placeholder="Rechercher un jeu..."
             value={gameFilters.search}
-            onChange={(e) => setGameFilters({ search: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGameFilters({ search: e.target.value })}
             icon={<Search className="w-4 h-4" />}
           />
         </div>
