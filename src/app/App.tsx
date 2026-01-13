@@ -98,7 +98,7 @@ function AppContent() {
 
 export function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/BoardInfluence/">
       <AuthProvider>
         <AppContent />
       </AuthProvider>
