@@ -229,6 +229,48 @@ export class AuthService {
       }
     });
   }
+
+  /**
+   * Request a password reset email
+   */
+  async requestPasswordReset(email: string): Promise<{ error: Error | null }> {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/BoardInfluence/reset-password`,
+      });
+
+      if (error) {
+        return { error };
+      }
+
+      return { error: null };
+    } catch (error) {
+      return {
+        error: error instanceof Error ? error : new Error('Unknown error during password reset request'),
+      };
+    }
+  }
+
+  /**
+   * Update password with new password
+   */
+  async updatePassword(newPassword: string): Promise<{ error: Error | null }> {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) {
+        return { error };
+      }
+
+      return { error: null };
+    } catch (error) {
+      return {
+        error: error instanceof Error ? error : new Error('Unknown error during password update'),
+      };
+    }
+  }
 }
 
 export const authService = new AuthService();

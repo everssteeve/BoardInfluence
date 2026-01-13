@@ -15,7 +15,7 @@ import { Reports } from '@/features/reports';
 import { Onboarding } from '@/features/onboarding';
 import { SearchModal } from '@/features/search';
 import { ImportModal } from '@/features/import';
-import { Login, Signup } from '@/features/auth';
+import { Login, Signup, ForgotPassword, ResetPassword } from '@/features/auth';
 import { UserProfile } from '@/features/profile';
 
 function AppContent() {
@@ -56,6 +56,8 @@ function AppContent() {
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* Protected routes */}
       <Route
