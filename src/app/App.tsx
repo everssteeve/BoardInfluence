@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from '@/contexts/AuthContext';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useStore } from '@/store';
 import { storageService } from '@/services/storage/LocalStorageService';
+import { gamesDB, influencersDB, campaignsDB } from '@/services/database/supabaseService';
 import { MainLayout } from '@/components/layout';
 import { Dashboard } from '@/features/dashboard';
 import { Games } from '@/features/games';
@@ -30,26 +31,59 @@ function AppContent() {
     setShowSearchModal,
     setShowImportModal,
   } = useStore();
+  const { user } = useAuth();
 
   useEffect(() => {
-    // Load data from localStorage
+    // Load data from Supabase if user is authenticated, otherwise from localStorage
     const loadData = async () => {
-      const games = await storageService.getGames();
-      const influencers = await storageService.getInfluencers();
-      const campaigns = await storageService.getCampaigns();
+      if (user) {
+        try {
+          // Load from Supabase
+          console.log('Loading data from Supabase for user:', user.id);
+          const [games, influencers, campaigns] = await Promise.all([
+            gamesDB.getAll(user.id),
+            influencersDB.getAll(user.id),
+            campaignsDB.getAll(user.id),
+          ]);
 
-      setGames(games);
-      setInfluencers(influencers);
-      setCampaigns(campaigns);
+          setGames(games);
+          setInfluencers(influencers);
+          setCampaigns(campaigns);
 
-      // Show onboarding if first time
-      if (!storageService.hasSeenOnboarding() && games.length === 0 && influencers.length === 0) {
-        setShowOnboarding(true);
+          // Show onboarding if first time
+          if (!storageService.hasSeenOnboarding() && games.length === 0 && influencers.length === 0) {
+            setShowOnboarding(true);
+          }
+        } catch (error) {
+          console.error('Error loading data from Supabase:', error);
+          // Fallback to localStorage if Supabase fails
+          const games = await storageService.getGames();
+          const influencers = await storageService.getInfluencers();
+          const campaigns = await storageService.getCampaigns();
+
+          setGames(games);
+          setInfluencers(influencers);
+          setCampaigns(campaigns);
+        }
+      } else {
+        // User not authenticated, load from localStorage
+        const games = await storageService.getGames();
+        const influencers = await storageService.getInfluencers();
+        const campaigns = await storageService.getCampaigns();
+
+        setGames(games);
+        setInfluencers(influencers);
+        setCampaigns(campaigns);
+
+        // Show onboarding if first time
+        if (!storageService.hasSeenOnboarding() && games.length === 0 && influencers.length === 0) {
+          setShowOnboarding(true);
+        }
       }
     };
 
     loadData();
-  }, [setGames, setInfluencers, setCampaigns, setShowOnboarding]);
+  }, [user, setGames, setInfluencers, setCampaigns, setShowOnboarding]);
 
   return (
     <Routes>

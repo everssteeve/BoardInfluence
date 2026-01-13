@@ -1,14 +1,17 @@
 import { useState, useMemo } from 'react';
 import { useStore } from '@/store';
+import { useAuth } from '@/contexts/AuthContext';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/common/Button/Button';
 import { CampaignCard } from './components/CampaignCard';
 import { CampaignForm } from './components/CampaignForm';
 import { CampaignFilters } from './components/CampaignFilters';
 import { Campaign } from '@/types/models/Campaign';
+import { campaignsDB } from '@/services/database/supabaseService';
 
 export function Campaigns() {
-  const { campaigns, games, influencers, campaignFilters, deleteCampaign } = useStore();
+  const { campaigns, games, influencers, campaignFilters, deleteCampaign, showAlert } = useStore();
+  const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
 
@@ -68,9 +71,23 @@ export function Campaigns() {
     setShowForm(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    if (!user) {
+      showAlert('Vous devez être connecté pour supprimer une campagne', 'error');
+      return;
+    }
+
     if (confirm('Êtes-vous sûr de vouloir supprimer cette campagne ?')) {
-      deleteCampaign(id);
+      try {
+        // Delete from Supabase first
+        await campaignsDB.delete(id, user.id);
+        // Then delete from local store
+        deleteCampaign(id);
+        showAlert('Campagne supprimée avec succès', 'success');
+      } catch (error) {
+        console.error('Error deleting campaign:', error);
+        showAlert('Erreur lors de la suppression de la campagne. Veuillez réessayer.', 'error');
+      }
     }
   };
 

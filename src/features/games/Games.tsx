@@ -1,14 +1,17 @@
 import { useState, useMemo } from 'react';
 import { useStore } from '@/store';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/common/Button';
 import { GameCard } from './components/GameCard';
 import { GameForm } from './components/GameForm';
 import { GameFilters } from './components/GameFilters';
 import { Game } from '@/types/models/Game';
 import { Plus, PackageX } from 'lucide-react';
+import { gamesDB } from '@/services/database/supabaseService';
 
 export function Games() {
   const { games, gameFilters, deleteGame, showAlert } = useStore();
+  const { user } = useAuth();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
@@ -55,10 +58,23 @@ export function Games() {
     setIsFormOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    if (!user) {
+      showAlert('Vous devez être connecté pour supprimer un jeu', 'error');
+      return;
+    }
+
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce jeu ?')) {
-      deleteGame(id);
-      showAlert('Jeu supprimé avec succès', 'success');
+      try {
+        // Delete from Supabase first
+        await gamesDB.delete(id, user.id);
+        // Then delete from local store
+        deleteGame(id);
+        showAlert('Jeu supprimé avec succès', 'success');
+      } catch (error) {
+        console.error('Error deleting game:', error);
+        showAlert('Erreur lors de la suppression du jeu. Veuillez réessayer.', 'error');
+      }
     }
   };
 

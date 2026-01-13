@@ -9,6 +9,7 @@ import { PLATFORMS } from '@/utils/constants/platforms';
 import { SPECIALTIES } from '@/utils/constants/specialties';
 import { PRICING_OPTIONS } from '@/utils/constants/pricing';
 import { AVAILABILITY_OPTIONS } from '@/utils/constants/availability';
+import { influencersDB } from '@/services/database/supabaseService';
 
 interface InfluencerFormProps {
   isOpen: boolean;
@@ -69,7 +70,7 @@ export function InfluencerForm({ isOpen, onClose, influencer }: InfluencerFormPr
     }
   }, [influencer, isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.name.trim()) {
@@ -77,27 +78,35 @@ export function InfluencerForm({ isOpen, onClose, influencer }: InfluencerFormPr
       return;
     }
 
-    if (influencer) {
-      updateInfluencer(influencer.id, formData);
-      showAlert('Influenceur modifié avec succès !', 'success');
-    } else {
-      if (!user) {
-        showAlert('Vous devez être connecté pour ajouter un influenceur', 'error');
-        return;
-      }
-      const newInfluencer: Influencer = {
-        ...formData,
-        id: crypto.randomUUID(),
-        userId: user.id,
-        games: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      addInfluencer(newInfluencer);
-      showAlert('Influenceur ajouté avec succès !', 'success');
+    if (!user) {
+      showAlert('Vous devez être connecté pour ajouter un influenceur', 'error');
+      return;
     }
 
-    onClose();
+    try {
+      if (influencer) {
+        // Update existing influencer in Supabase first
+        const updatedInfluencer = await influencersDB.update(influencer.id, formData, user.id);
+        // Then update local store
+        updateInfluencer(influencer.id, formData);
+        showAlert('Influenceur modifié avec succès !', 'success');
+      } else {
+        // Create new influencer in Supabase first
+        const newInfluencerData = {
+          ...formData,
+          userId: user.id,
+        };
+        const createdInfluencer = await influencersDB.create(newInfluencerData, user.id);
+        // Then add to local store
+        addInfluencer(createdInfluencer);
+        showAlert('Influenceur ajouté avec succès !', 'success');
+      }
+
+      onClose();
+    } catch (error) {
+      console.error('Error saving influencer:', error);
+      showAlert('Erreur lors de la sauvegarde de l\'influenceur. Veuillez réessayer.', 'error');
+    }
   };
 
   const handleSpecialtyToggle = (specialty: Specialty) => {

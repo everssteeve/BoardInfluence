@@ -5,6 +5,7 @@ import { Input } from '@/components/common/Input';
 import { Game, GameFormData } from '@/types/models/Game';
 import { useStore } from '@/store';
 import { useAuth } from '@/contexts/AuthContext';
+import { gamesDB } from '@/services/database/supabaseService';
 
 interface GameFormProps {
   isOpen: boolean;
@@ -63,7 +64,7 @@ export function GameForm({ isOpen, onClose, game }: GameFormProps) {
     }
   }, [game, isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.name.trim() || !formData.editor.trim()) {
@@ -71,27 +72,36 @@ export function GameForm({ isOpen, onClose, game }: GameFormProps) {
       return;
     }
 
-    if (game) {
-      updateGame(game.id, formData);
-      showAlert('Jeu modifié avec succès !', 'success');
-    } else {
-      if (!user) {
-        showAlert('Vous devez être connecté pour ajouter un jeu', 'error');
-        return;
-      }
-      const newGame: Game = {
-        ...formData,
-        id: crypto.randomUUID(),
-        userId: user.id,
-        source: 'manual',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      addGame(newGame);
-      showAlert('Jeu ajouté avec succès !', 'success');
+    if (!user) {
+      showAlert('Vous devez être connecté pour ajouter un jeu', 'error');
+      return;
     }
 
-    onClose();
+    try {
+      if (game) {
+        // Update existing game in Supabase first
+        const updatedGame = await gamesDB.update(game.id, formData, user.id);
+        // Then update local store
+        updateGame(game.id, formData);
+        showAlert('Jeu modifié avec succès !', 'success');
+      } else {
+        // Create new game in Supabase first
+        const newGameData = {
+          ...formData,
+          userId: user.id,
+          source: 'manual' as const,
+        };
+        const createdGame = await gamesDB.create(newGameData, user.id);
+        // Then add to local store
+        addGame(createdGame);
+        showAlert('Jeu ajouté avec succès !', 'success');
+      }
+
+      onClose();
+    } catch (error) {
+      console.error('Error saving game:', error);
+      showAlert('Erreur lors de la sauvegarde du jeu. Veuillez réessayer.', 'error');
+    }
   };
 
   return (
