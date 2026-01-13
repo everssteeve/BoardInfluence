@@ -6,6 +6,7 @@ import { Modal } from '@/components/common/Modal/Modal';
 import { Input } from '@/components/common/Input/Input';
 import { Button } from '@/components/common/Button/Button';
 import { Campaign, Deliverable, CampaignStatus, DeliverableType } from '@/types/models/Campaign';
+import { campaignsDB } from '@/services/database/supabaseService';
 
 interface CampaignFormProps {
   campaign: Campaign | null;
@@ -13,7 +14,7 @@ interface CampaignFormProps {
 }
 
 export function CampaignForm({ campaign, onClose }: CampaignFormProps) {
-  const { games, influencers, addCampaign, updateCampaign } = useStore();
+  const { games, influencers, addCampaign, updateCampaign, showAlert } = useStore();
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
@@ -45,36 +46,46 @@ export function CampaignForm({ campaign, onClose }: CampaignFormProps) {
     }
   }, [campaign]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.name || !formData.gameId || formData.influencerIds.length === 0) {
-      alert('Veuillez remplir tous les champs obligatoires');
+      showAlert('Veuillez remplir tous les champs obligatoires', 'error');
       return;
     }
 
-    if (!user && !campaign) {
-      alert('Vous devez être connecté pour créer une campagne');
+    if (!user) {
+      showAlert('Vous devez être connecté pour créer une campagne', 'error');
       return;
     }
 
-    const now = new Date().toISOString();
-    const campaignData: Campaign = {
-      id: campaign?.id || `campaign-${Date.now()}`,
-      userId: campaign?.userId || user!.id,
-      ...formData,
-      deliverables,
-      createdAt: campaign?.createdAt || now,
-      updatedAt: now,
-    };
+    try {
+      const campaignData = {
+        ...formData,
+        userId: user.id,
+        deliverables,
+        endDate: formData.endDate || null,
+      };
 
-    if (campaign) {
-      updateCampaign(campaign.id, campaignData);
-    } else {
-      addCampaign(campaignData);
+      if (campaign) {
+        // Update existing campaign in Supabase first
+        const updatedCampaign = await campaignsDB.update(campaign.id, campaignData, user.id);
+        // Then update local store
+        updateCampaign(campaign.id, updatedCampaign);
+        showAlert('Campagne modifiée avec succès !', 'success');
+      } else {
+        // Create new campaign in Supabase first
+        const createdCampaign = await campaignsDB.create(campaignData, user.id);
+        // Then add to local store
+        addCampaign(createdCampaign);
+        showAlert('Campagne créée avec succès !', 'success');
+      }
+
+      onClose();
+    } catch (error) {
+      console.error('Error saving campaign:', error);
+      showAlert('Erreur lors de la sauvegarde de la campagne. Veuillez réessayer.', 'error');
     }
-
-    onClose();
   };
 
   const addDeliverable = () => {

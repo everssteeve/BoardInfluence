@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useStore } from '@/store';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/common/Button';
 import { InfluencerCard } from './components/InfluencerCard';
 import { InfluencerForm } from './components/InfluencerForm';
@@ -7,9 +8,11 @@ import { InfluencerFilters } from './components/InfluencerFilters';
 import { Influencer } from '@/types/models/Influencer';
 import { Plus, UserX } from 'lucide-react';
 import { calculateInfluenceScore } from '@/utils/helpers/scoreHelpers';
+import { influencersDB } from '@/services/database/supabaseService';
 
 export function Influencers() {
   const { influencers, influencerFilters, deleteInfluencer, showAlert } = useStore();
+  const { user } = useAuth();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedInfluencer, setSelectedInfluencer] = useState<Influencer | null>(null);
 
@@ -108,10 +111,23 @@ export function Influencers() {
     setIsFormOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    if (!user) {
+      showAlert('Vous devez être connecté pour supprimer un influenceur', 'error');
+      return;
+    }
+
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cet influenceur ?')) {
-      deleteInfluencer(id);
-      showAlert('Influenceur supprimé avec succès', 'success');
+      try {
+        // Delete from Supabase first
+        await influencersDB.delete(id, user.id);
+        // Then delete from local store
+        deleteInfluencer(id);
+        showAlert('Influenceur supprimé avec succès', 'success');
+      } catch (error) {
+        console.error('Error deleting influencer:', error);
+        showAlert('Erreur lors de la suppression de l\'influenceur. Veuillez réessayer.', 'error');
+      }
     }
   };
 
