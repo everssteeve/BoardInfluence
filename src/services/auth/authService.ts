@@ -235,8 +235,10 @@ export class AuthService {
    */
   async requestPasswordReset(email: string): Promise<{ error: Error | null }> {
     try {
+      // Use VITE_APP_URL from environment variables to ensure correct redirect in production
+      const appUrl = import.meta.env.VITE_APP_URL || window.location.origin + '/BoardInfluence';
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/BoardInfluence/reset-password`,
+        redirectTo: `${appUrl}/reset-password`,
       });
 
       if (error) {
