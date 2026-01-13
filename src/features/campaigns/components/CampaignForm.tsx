@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useStore } from '@/store';
+import { useAuth } from '@/contexts/AuthContext';
 import { Plus, Trash2 } from 'lucide-react';
 import { Modal } from '@/components/common/Modal/Modal';
 import { Input } from '@/components/common/Input/Input';
@@ -13,6 +14,7 @@ interface CampaignFormProps {
 
 export function CampaignForm({ campaign, onClose }: CampaignFormProps) {
   const { games, influencers, addCampaign, updateCampaign } = useStore();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     gameId: '',
@@ -51,9 +53,15 @@ export function CampaignForm({ campaign, onClose }: CampaignFormProps) {
       return;
     }
 
+    if (!user && !campaign) {
+      alert('Vous devez être connecté pour créer une campagne');
+      return;
+    }
+
     const now = new Date().toISOString();
     const campaignData: Campaign = {
       id: campaign?.id || `campaign-${Date.now()}`,
+      userId: campaign?.userId || user!.id,
       ...formData,
       deliverables,
       createdAt: campaign?.createdAt || now,

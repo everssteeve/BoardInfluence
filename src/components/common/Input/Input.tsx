@@ -13,6 +13,7 @@ export function Input({
   className,
   icon,
   autoFocus = false,
+  ...rest
 }: InputProps) {
   return (
     <div className={clsx('w-full', className)}>
@@ -39,6 +40,7 @@ export function Input({
             'border-danger focus:border-danger': error,
             'pl-10': icon,
           })}
+          {...rest}
         />
       </div>
       {error && <p className="mt-1 text-sm text-danger">{error}</p>}

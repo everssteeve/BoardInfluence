@@ -17,8 +17,8 @@ export interface ButtonProps extends BaseComponentProps {
 export interface InputProps {
   label?: string;
   placeholder?: string;
-  value: string | number;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string | number;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: 'text' | 'email' | 'password' | 'number' | 'date' | 'url';
   error?: string;
   required?: boolean;
@@ -26,6 +26,7 @@ export interface InputProps {
   className?: string;
   icon?: ReactNode;
   autoFocus?: boolean;
+  [key: string]: any;
 }
 
 export interface ModalProps extends BaseComponentProps {

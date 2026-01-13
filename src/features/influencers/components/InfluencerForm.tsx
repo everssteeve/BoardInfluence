@@ -4,6 +4,7 @@ import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { Influencer, InfluencerFormData, Specialty } from '@/types/models/Influencer';
 import { useStore } from '@/store';
+import { useAuth } from '@/contexts/AuthContext';
 import { PLATFORMS } from '@/utils/constants/platforms';
 import { SPECIALTIES } from '@/utils/constants/specialties';
 import { PRICING_OPTIONS } from '@/utils/constants/pricing';
@@ -17,6 +18,7 @@ interface InfluencerFormProps {
 
 export function InfluencerForm({ isOpen, onClose, influencer }: InfluencerFormProps) {
   const { addInfluencer, updateInfluencer, showAlert } = useStore();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState<InfluencerFormData>({
     name: '',
@@ -79,9 +81,14 @@ export function InfluencerForm({ isOpen, onClose, influencer }: InfluencerFormPr
       updateInfluencer(influencer.id, formData);
       showAlert('Influenceur modifié avec succès !', 'success');
     } else {
+      if (!user) {
+        showAlert('Vous devez être connecté pour ajouter un influenceur', 'error');
+        return;
+      }
       const newInfluencer: Influencer = {
         ...formData,
         id: crypto.randomUUID(),
+        userId: user.id,
         games: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
