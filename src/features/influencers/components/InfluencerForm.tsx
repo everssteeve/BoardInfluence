@@ -86,7 +86,7 @@ export function InfluencerForm({ isOpen, onClose, influencer }: InfluencerFormPr
     try {
       if (influencer) {
         // Update existing influencer in Supabase first
-        const updatedInfluencer = await influencersDB.update(influencer.id, formData, user.id);
+        await influencersDB.update(influencer.id, formData, user.id);
         // Then update local store
         updateInfluencer(influencer.id, formData);
         showAlert('Influenceur modifié avec succès !', 'success');
