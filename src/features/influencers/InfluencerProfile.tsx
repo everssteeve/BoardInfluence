@@ -20,8 +20,8 @@ import { YoutubeSyncButton } from '../../components/common/YoutubeSyncButton';
 import { formatCurrency } from '../../utils/formatters/numberFormatter';
 import { formatDate } from '../../utils/formatters/dateFormatter';
 import { calculateInfluenceScore } from '../../utils/helpers/scoreHelpers';
-import { syncInfluencerYoutubeMetrics } from '../../services/youtube/youtubeSyncService';
 import { extractChannelId } from '../../services/youtube/youtubeService';
+import { useYoutubeSync } from '../../hooks/useYoutubeSync';
 
 const platformColors: Record<string, string> = {
   YouTube: 'bg-red-500',
@@ -53,6 +53,8 @@ export const InfluencerProfile: React.FC = () => {
   const campaigns = useStore(state => state.campaigns);
   const games = useStore(state => state.games);
   const updateInfluencer = useStore(state => state.updateInfluencer);
+
+  const { syncInfluencer, error: syncError } = useYoutubeSync();
 
   const influencer = influencers.find(i => i.id === id);
 
@@ -88,13 +90,7 @@ export const InfluencerProfile: React.FC = () => {
       }
     }
 
-    const updated = await syncInfluencerYoutubeMetrics(influencer);
-    if (updated) {
-      updateInfluencer(influencer.id, {
-        youtubeMetrics: updated.youtubeMetrics,
-        lastYoutubeSync: updated.lastYoutubeSync,
-      });
-    }
+    await syncInfluencer(influencer);
   };
 
   // Use YouTube metrics when available
@@ -150,6 +146,7 @@ export const InfluencerProfile: React.FC = () => {
               onSync={handleYoutubeSync}
               lastSyncDate={influencer.lastYoutubeSync}
               size="sm"
+              errorMessage={syncError}
             />
           </div>
         </Card>
