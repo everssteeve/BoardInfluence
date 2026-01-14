@@ -33,7 +33,7 @@ export async function syncInfluencerYoutubeMetrics(
     let channelId = influencer.youtubeChannelId;
 
     if (!channelId) {
-      channelId = extractChannelId(influencer.url);
+      channelId = extractChannelId(influencer.url) ?? undefined;
       if (!channelId) {
         throw new Error('Could not extract YouTube channel ID from URL. Please use a direct channel URL (youtube.com/channel/...)');
       }
