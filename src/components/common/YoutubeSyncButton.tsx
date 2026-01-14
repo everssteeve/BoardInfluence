@@ -8,6 +8,7 @@ interface YoutubeSyncButtonProps {
   lastSyncDate?: string;
   size?: 'sm' | 'md' | 'lg';
   label?: string;
+  errorMessage?: string | null;
 }
 
 export function YoutubeSyncButton({
@@ -16,13 +17,16 @@ export function YoutubeSyncButton({
   lastSyncDate,
   size = 'md',
   label = 'Synchroniser YouTube',
+  errorMessage,
 }: YoutubeSyncButtonProps) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [localError, setLocalError] = useState<string | null>(null);
 
   const handleSync = async () => {
     setIsSyncing(true);
     setSyncStatus('idle');
+    setLocalError(null);
 
     try {
       await onSync();
@@ -30,7 +34,12 @@ export function YoutubeSyncButton({
       setTimeout(() => setSyncStatus('idle'), 3000);
     } catch (error) {
       setSyncStatus('error');
-      setTimeout(() => setSyncStatus('idle'), 5000);
+      const errorMsg = error instanceof Error ? error.message : 'Erreur de synchronisation';
+      setLocalError(errorMsg);
+      setTimeout(() => {
+        setSyncStatus('idle');
+        setLocalError(null);
+      }, 10000);
     } finally {
       setIsSyncing(false);
     }
@@ -57,6 +66,8 @@ export function YoutubeSyncButton({
     return 'secondary';
   };
 
+  const displayError = errorMessage || localError;
+
   return (
     <div className="flex flex-col gap-1">
       <Button
@@ -71,7 +82,12 @@ export function YoutubeSyncButton({
         />
         {getButtonText()}
       </Button>
-      {lastSyncDate && syncStatus === 'idle' && (
+      {displayError && syncStatus === 'error' && (
+        <span className="text-xs text-red-500 max-w-xs">
+          {displayError}
+        </span>
+      )}
+      {lastSyncDate && syncStatus === 'idle' && !displayError && (
         <span className="text-xs text-muted">
           Dernière sync: {new Date(lastSyncDate).toLocaleDateString('fr-FR', {
             day: '2-digit',
