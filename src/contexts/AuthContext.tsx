@@ -100,7 +100,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const updateProfile = async (updates: UserProfile) => {
     if (!user) {
-      return { error: new Error('No user logged in') };
+      return { error: new Error('Aucun utilisateur connecté') };
     }
 
     const { profile: updatedProfile, error } = await authService.updateUserProfile(

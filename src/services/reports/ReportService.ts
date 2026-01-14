@@ -15,7 +15,7 @@ export class ReportService {
 
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text(`Generated on ${formatDate(new Date())}`, 14, 30);
+    doc.text(`Généré le ${formatDate(new Date())}`, 14, 30);
 
     // Add logo/brand text
     doc.setFontSize(12);
@@ -34,7 +34,7 @@ export class ReportService {
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
       doc.text(
-        `Page ${i} of ${pageCount}`,
+        `Page ${i} sur ${pageCount}`,
         doc.internal.pageSize.getWidth() / 2,
         doc.internal.pageSize.getHeight() - 10,
         { align: 'center' }
@@ -46,7 +46,7 @@ export class ReportService {
   static generateCampaignReport(campaigns: Campaign[], games: Game[], _influencers: Influencer[]): void {
     const doc = new jsPDF();
 
-    this.addHeader(doc, 'Campaign Performance Report');
+    this.addHeader(doc, 'Rapport de Performance des Campagnes');
 
     // Summary stats
     const totalBudget = campaigns.reduce((sum, c) => sum + c.budget, 0);
@@ -61,20 +61,20 @@ export class ReportService {
 
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
-    doc.text('Overview', 14, 45);
+    doc.text('Vue d\'ensemble', 14, 45);
 
     doc.setFontSize(10);
     const summaryData = [
-      ['Total Campaigns', campaigns.length.toString()],
-      ['Active Campaigns', activeCampaigns.toString()],
-      ['Completed Campaigns', completedCampaigns.toString()],
-      ['Total Budget', formatCurrency(totalBudget)],
-      ['Average Completion', `${avgCompletion.toFixed(1)}%`]
+      ['Total Campagnes', campaigns.length.toString()],
+      ['Campagnes Actives', activeCampaigns.toString()],
+      ['Campagnes Terminées', completedCampaigns.toString()],
+      ['Budget Total', formatCurrency(totalBudget)],
+      ['Complétion Moyenne', `${avgCompletion.toFixed(1)}%`]
     ];
 
     autoTable(doc, {
       startY: 50,
-      head: [['Metric', 'Value']],
+      head: [['Métrique', 'Valeur']],
       body: summaryData,
       theme: 'striped',
       headStyles: { fillColor: [255, 107, 53] }
@@ -100,7 +100,7 @@ export class ReportService {
 
     autoTable(doc, {
       startY: (doc as any).lastAutoTable.finalY + 10,
-      head: [['Campaign', 'Game', 'Status', 'Budget', 'Deliverables', 'Completion']],
+      head: [['Campagne', 'Jeu', 'Statut', 'Budget', 'Livrables', 'Complétion']],
       body: campaignData,
       theme: 'striped',
       headStyles: { fillColor: [0, 78, 137] }
@@ -114,7 +114,7 @@ export class ReportService {
   static generateInfluencerReport(influencers: Influencer[], campaigns: Campaign[]): void {
     const doc = new jsPDF();
 
-    this.addHeader(doc, 'Influencer Summary Report');
+    this.addHeader(doc, 'Rapport Récapitulatif des Influenceurs');
 
     // Summary stats
     const totalInfluencers = influencers.length;
@@ -126,19 +126,19 @@ export class ReportService {
 
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
-    doc.text('Overview', 14, 45);
+    doc.text('Vue d\'ensemble', 14, 45);
 
     doc.setFontSize(10);
     const summaryData = [
-      ['Total Influencers', totalInfluencers.toString()],
-      ['Available Influencers', availableInfluencers.toString()],
-      ['Average Influence Score', avgScore.toFixed(1)],
-      ['Most Popular Platform', topPlatform]
+      ['Total Influenceurs', totalInfluencers.toString()],
+      ['Influenceurs Disponibles', availableInfluencers.toString()],
+      ['Score d\'Influence Moyen', avgScore.toFixed(1)],
+      ['Plateforme la Plus Populaire', topPlatform]
     ];
 
     autoTable(doc, {
       startY: 50,
-      head: [['Metric', 'Value']],
+      head: [['Métrique', 'Valeur']],
       body: summaryData,
       theme: 'striped',
       headStyles: { fillColor: [255, 107, 53] }
@@ -166,11 +166,11 @@ export class ReportService {
     });
 
     doc.setFontSize(12);
-    doc.text('Top 10 Influencers by Score', 14, (doc as any).lastAutoTable.finalY + 15);
+    doc.text('Top 10 Influenceurs par Score', 14, (doc as any).lastAutoTable.finalY + 15);
 
     autoTable(doc, {
       startY: (doc as any).lastAutoTable.finalY + 20,
-      head: [['Name', 'Platform', 'Subscribers', 'Score', 'Campaigns', 'Availability']],
+      head: [['Nom', 'Plateforme', 'Abonnés', 'Score', 'Campagnes', 'Disponibilité']],
       body: influencerData,
       theme: 'striped',
       headStyles: { fillColor: [0, 78, 137] }
@@ -188,20 +188,20 @@ export class ReportService {
   ): void {
     const doc = new jsPDF();
 
-    this.addHeader(doc, `Campaign: ${campaign.name}`);
+    this.addHeader(doc, `Campagne: ${campaign.name}`);
 
     // Campaign info
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
-    doc.text('Campaign Details', 14, 45);
+    doc.text('Détails de la Campagne', 14, 45);
 
     const infoData = [
-      ['Game', game?.name || 'N/A'],
-      ['Status', campaign.status],
+      ['Jeu', game?.name || 'N/A'],
+      ['Statut', campaign.status],
       ['Budget', formatCurrency(campaign.budget)],
-      ['Start Date', formatDate(campaign.startDate)],
-      ['End Date', campaign.endDate ? formatDate(campaign.endDate) : 'N/A'],
-      ['Objectives', campaign.objectives || 'N/A']
+      ['Date de Début', formatDate(campaign.startDate)],
+      ['Date de Fin', campaign.endDate ? formatDate(campaign.endDate) : 'N/A'],
+      ['Objectifs', campaign.objectives || 'N/A']
     ];
 
     autoTable(doc, {
@@ -216,7 +216,7 @@ export class ReportService {
 
     // Influencers
     doc.setFontSize(12);
-    doc.text('Assigned Influencers', 14, (doc as any).lastAutoTable.finalY + 15);
+    doc.text('Influenceurs Assignés', 14, (doc as any).lastAutoTable.finalY + 15);
 
     const campaignInfluencers = influencers.filter(i =>
       campaign.influencerIds.includes(i.id)
@@ -231,26 +231,26 @@ export class ReportService {
 
     autoTable(doc, {
       startY: (doc as any).lastAutoTable.finalY + 20,
-      head: [['Name', 'Platform', 'Subscribers', 'Score']],
-      body: influencerData.length > 0 ? influencerData : [['No influencers assigned', '', '', '']],
+      head: [['Nom', 'Plateforme', 'Abonnés', 'Score']],
+      body: influencerData.length > 0 ? influencerData : [['Aucun influenceur assigné', '', '', '']],
       theme: 'striped',
       headStyles: { fillColor: [0, 78, 137] }
     });
 
     // Deliverables
     doc.setFontSize(12);
-    doc.text('Deliverables', 14, (doc as any).lastAutoTable.finalY + 15);
+    doc.text('Livrables', 14, (doc as any).lastAutoTable.finalY + 15);
 
     const deliverableData = campaign.deliverables.map(del => [
       del.type,
       del.description,
-      del.completed ? '✓ Completed' : '○ Pending'
+      del.completed ? '✓ Terminé' : '○ En Attente'
     ]);
 
     autoTable(doc, {
       startY: (doc as any).lastAutoTable.finalY + 20,
-      head: [['Type', 'Description', 'Status']],
-      body: deliverableData.length > 0 ? deliverableData : [['No deliverables', '', '']],
+      head: [['Type', 'Description', 'Statut']],
+      body: deliverableData.length > 0 ? deliverableData : [['Aucun livrable', '', '']],
       theme: 'striped',
       headStyles: { fillColor: [255, 107, 53] },
       columnStyles: {
@@ -268,7 +268,7 @@ export class ReportService {
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text(
-      `Completion Rate: ${completionRate}% (${completed}/${total} deliverables)`,
+      `Taux de Complétion: ${completionRate}% (${completed}/${total} livrables)`,
       14,
       (doc as any).lastAutoTable.finalY + 10
     );
@@ -281,7 +281,7 @@ export class ReportService {
   static generateBudgetReport(campaigns: Campaign[], games: Game[]): void {
     const doc = new jsPDF();
 
-    this.addHeader(doc, 'Budget Analysis Report');
+    this.addHeader(doc, 'Rapport d\'Analyse Budgétaire');
 
     // Budget by status
     const budgetByStatus = {
@@ -297,7 +297,7 @@ export class ReportService {
 
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
-    doc.text('Budget by Campaign Status', 14, 45);
+    doc.text('Budget par Statut de Campagne', 14, 45);
 
     const statusData = Object.entries(budgetByStatus).map(([status, budget]) => [
       status,
@@ -307,7 +307,7 @@ export class ReportService {
 
     autoTable(doc, {
       startY: 50,
-      head: [['Status', 'Total Budget', 'Campaign Count']],
+      head: [['Statut', 'Budget Total', 'Nombre de Campagnes']],
       body: statusData,
       theme: 'striped',
       headStyles: { fillColor: [255, 107, 53] }
@@ -318,7 +318,7 @@ export class ReportService {
 
     campaigns.forEach(c => {
       const game = games.find(g => g.id === c.gameId);
-      const gameName = game?.name || 'Unknown Game';
+      const gameName = game?.name || 'Jeu Inconnu';
 
       if (!budgetByGame[gameName]) {
         budgetByGame[gameName] = { budget: 0, count: 0 };
@@ -338,11 +338,11 @@ export class ReportService {
       ]);
 
     doc.setFontSize(12);
-    doc.text('Budget by Game', 14, (doc as any).lastAutoTable.finalY + 15);
+    doc.text('Budget par Jeu', 14, (doc as any).lastAutoTable.finalY + 15);
 
     autoTable(doc, {
       startY: (doc as any).lastAutoTable.finalY + 20,
-      head: [['Game', 'Total Budget', 'Campaigns', 'Avg per Campaign']],
+      head: [['Jeu', 'Budget Total', 'Campagnes', 'Moyenne par Campagne']],
       body: gameData,
       theme: 'striped',
       headStyles: { fillColor: [0, 78, 137] }
@@ -356,9 +356,9 @@ export class ReportService {
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     const summaryY = (doc as any).lastAutoTable.finalY + 10;
-    doc.text(`Total Budget: ${formatCurrency(totalBudget)}`, 14, summaryY);
-    doc.text(`Completed Campaigns: ${formatCurrency(completedBudget)}`, 14, summaryY + 6);
-    doc.text(`Active Campaigns: ${formatCurrency(activeBudget)}`, 14, summaryY + 12);
+    doc.text(`Budget Total: ${formatCurrency(totalBudget)}`, 14, summaryY);
+    doc.text(`Campagnes Terminées: ${formatCurrency(completedBudget)}`, 14, summaryY + 6);
+    doc.text(`Campagnes Actives: ${formatCurrency(activeBudget)}`, 14, summaryY + 12);
 
     this.addFooter(doc);
     doc.save('budget-analysis.pdf');

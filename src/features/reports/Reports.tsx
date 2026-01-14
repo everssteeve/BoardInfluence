@@ -45,34 +45,34 @@ export const Reports: React.FC = () => {
   const reportTypes = [
     {
       id: 'campaign' as const,
-      title: 'Campaign Performance Report',
-      description: 'Comprehensive overview of all campaigns with status, budget, and completion metrics',
+      title: 'Rapport de Performance des Campagnes',
+      description: 'Vue d\'ensemble complète de toutes les campagnes avec statut, budget et métriques de complétion',
       icon: Target,
       color: 'bg-orange-500',
       stats: {
-        label: 'Total Campaigns',
+        label: 'Total Campagnes',
         value: campaigns.length
       }
     },
     {
       id: 'influencer' as const,
-      title: 'Influencer Summary Report',
-      description: 'Detailed analysis of influencers including scores, engagement, and campaign history',
+      title: 'Rapport Récapitulatif des Influenceurs',
+      description: 'Analyse détaillée des influenceurs incluant scores, engagement et historique de campagnes',
       icon: Users,
       color: 'bg-blue-500',
       stats: {
-        label: 'Total Influencers',
+        label: 'Total Influenceurs',
         value: influencers.length
       }
     },
     {
       id: 'budget' as const,
-      title: 'Budget Analysis Report',
-      description: 'Financial breakdown by campaign status, game, and overall budget allocation',
+      title: 'Rapport d\'Analyse Budgétaire',
+      description: 'Répartition financière par statut de campagne, jeu et allocation budgétaire globale',
       icon: DollarSign,
       color: 'bg-green-500',
       stats: {
-        label: 'Total Budget',
+        label: 'Budget Total',
         value: `${campaigns.reduce((sum, c) => sum + c.budget, 0).toLocaleString()}€`
       }
     }
@@ -82,9 +82,9 @@ export const Reports: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Reports</h1>
+        <h1 className="text-3xl font-bold mb-2">Rapports</h1>
         <p className="text-gray-400">
-          Generate detailed PDF reports for campaigns, influencers, and budget analysis
+          Générez des rapports PDF détaillés pour les campagnes, influenceurs et analyses budgétaires
         </p>
       </div>
 
@@ -96,7 +96,7 @@ export const Reports: React.FC = () => {
               <Target className="w-6 h-6 text-orange-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Total Campaigns</p>
+              <p className="text-sm text-gray-400">Total Campagnes</p>
               <p className="text-2xl font-bold">{campaigns.length}</p>
             </div>
           </div>
@@ -108,7 +108,7 @@ export const Reports: React.FC = () => {
               <Users className="w-6 h-6 text-blue-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Total Influencers</p>
+              <p className="text-sm text-gray-400">Total Influenceurs</p>
               <p className="text-2xl font-bold">{influencers.length}</p>
             </div>
           </div>
@@ -120,7 +120,7 @@ export const Reports: React.FC = () => {
               <DollarSign className="w-6 h-6 text-green-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Total Budget</p>
+              <p className="text-sm text-gray-400">Budget Total</p>
               <p className="text-2xl font-bold">
                 {campaigns.reduce((sum, c) => sum + c.budget, 0).toLocaleString()}€
               </p>
@@ -134,7 +134,7 @@ export const Reports: React.FC = () => {
               <TrendingUp className="w-6 h-6 text-purple-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Total Games</p>
+              <p className="text-sm text-gray-400">Total Jeux</p>
               <p className="text-2xl font-bold">{games.length}</p>
             </div>
           </div>
@@ -143,7 +143,7 @@ export const Reports: React.FC = () => {
 
       {/* Report Types */}
       <div>
-        <h2 className="text-xl font-bold mb-4">Available Reports</h2>
+        <h2 className="text-xl font-bold mb-4">Rapports Disponibles</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {reportTypes.map(report => {
             const Icon = report.icon;
@@ -174,12 +174,12 @@ export const Reports: React.FC = () => {
                   {isGenerating ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                      Generating...
+                      Génération...
                     </>
                   ) : (
                     <>
                       <Download className="w-4 h-4 mr-2" />
-                      Generate PDF
+                      Générer PDF
                     </>
                   )}
                 </Button>
@@ -196,19 +196,19 @@ export const Reports: React.FC = () => {
             <FileText className="w-6 h-6 text-blue-500" />
           </div>
           <div>
-            <h3 className="text-lg font-bold mb-2">About Reports</h3>
+            <h3 className="text-lg font-bold mb-2">À propos des Rapports</h3>
             <div className="space-y-2 text-sm text-gray-300">
               <p>
-                <strong>Campaign Report:</strong> Includes overview statistics, campaign details with
-                status and budget, deliverables tracking, and completion rates.
+                <strong>Rapport de Campagne :</strong> Inclut les statistiques générales, les détails des campagnes avec
+                statut et budget, le suivi des livrables et les taux de complétion.
               </p>
               <p>
-                <strong>Influencer Report:</strong> Features top performers by influence score,
-                platform distribution, subscriber counts, and campaign participation.
+                <strong>Rapport Influenceur :</strong> Présente les meilleurs performeurs par score d'influence,
+                la répartition par plateforme, le nombre d'abonnés et la participation aux campagnes.
               </p>
               <p>
-                <strong>Budget Report:</strong> Provides financial breakdown by campaign status, budget
-                allocation per game, and spending analysis.
+                <strong>Rapport Budgétaire :</strong> Fournit une répartition financière par statut de campagne, allocation
+                budgétaire par jeu et analyse des dépenses.
               </p>
             </div>
           </div>

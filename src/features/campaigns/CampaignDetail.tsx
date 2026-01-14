@@ -18,10 +18,10 @@ const statusColors = {
 };
 
 const statusLabels = {
-  planned: 'Planned',
-  in_progress: 'In Progress',
-  completed: 'Completed',
-  cancelled: 'Cancelled'
+  planned: 'Planifiée',
+  in_progress: 'En Cours',
+  completed: 'Terminée',
+  cancelled: 'Annulée'
 };
 
 const deliverableIcons: Record<string, string> = {
@@ -51,11 +51,11 @@ export const CampaignDetail: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card className="p-8 text-center">
-          <h2 className="text-xl font-bold mb-4">Campaign Not Found</h2>
-          <p className="text-gray-400 mb-6">The campaign you're looking for doesn't exist.</p>
+          <h2 className="text-xl font-bold mb-4">Campagne Non Trouvée</h2>
+          <p className="text-gray-400 mb-6">La campagne que vous recherchez n'existe pas.</p>
           <Button onClick={() => navigate('/campaigns')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Campaigns
+            Retour aux Campagnes
           </Button>
         </Card>
       </div>
@@ -83,7 +83,7 @@ export const CampaignDetail: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold">{campaign.name}</h1>
             <p className="text-gray-400 mt-1">
-              Created {formatDate(campaign.createdAt)}
+              Créée le {formatDate(campaign.createdAt)}
             </p>
           </div>
         </div>
@@ -93,7 +93,7 @@ export const CampaignDetail: React.FC = () => {
           </Badge>
           <Button variant="secondary" onClick={handleGenerateReport}>
             <Download className="w-4 h-4 mr-2" />
-            Export PDF
+            Exporter PDF
           </Button>
         </div>
       </div>
@@ -118,7 +118,7 @@ export const CampaignDetail: React.FC = () => {
               <Users className="w-6 h-6 text-blue-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Influencers</p>
+              <p className="text-sm text-gray-400">Influenceurs</p>
               <p className="text-2xl font-bold">{assignedInfluencers.length}</p>
             </div>
           </div>
@@ -130,7 +130,7 @@ export const CampaignDetail: React.FC = () => {
               <FileText className="w-6 h-6 text-green-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Deliverables</p>
+              <p className="text-sm text-gray-400">Livrables</p>
               <p className="text-2xl font-bold">
                 {completedDeliverables}/{totalDeliverables}
               </p>
@@ -144,7 +144,7 @@ export const CampaignDetail: React.FC = () => {
               <Target className="w-6 h-6 text-purple-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Completion</p>
+              <p className="text-sm text-gray-400">Complétion</p>
               <p className="text-2xl font-bold">{completionRate}%</p>
             </div>
           </div>
@@ -157,18 +157,18 @@ export const CampaignDetail: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           {/* Campaign Information */}
           <Card className="p-6">
-            <h2 className="text-xl font-bold mb-4">Campaign Information</h2>
+            <h2 className="text-xl font-bold mb-4">Informations de la Campagne</h2>
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-gray-400 mb-1">Game</p>
-                <p className="font-medium">{game?.name || 'Not assigned'}</p>
+                <p className="text-sm text-gray-400 mb-1">Jeu</p>
+                <p className="font-medium">{game?.name || 'Non assigné'}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-400 mb-1 flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
-                    Start Date
+                    Date de Début
                   </p>
                   <p className="font-medium">{formatDate(campaign.startDate)}</p>
                 </div>
@@ -176,7 +176,7 @@ export const CampaignDetail: React.FC = () => {
                   <div>
                     <p className="text-sm text-gray-400 mb-1 flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
-                      End Date
+                      Date de Fin
                     </p>
                     <p className="font-medium">{formatDate(campaign.endDate)}</p>
                   </div>
@@ -187,7 +187,7 @@ export const CampaignDetail: React.FC = () => {
                 <div>
                   <p className="text-sm text-gray-400 mb-1 flex items-center gap-2">
                     <Target className="w-4 h-4" />
-                    Objectives
+                    Objectifs
                   </p>
                   <p className="text-gray-300">{campaign.objectives}</p>
                 </div>
@@ -205,11 +205,11 @@ export const CampaignDetail: React.FC = () => {
           {/* Deliverables */}
           <Card className="p-6">
             <h2 className="text-xl font-bold mb-4">
-              Deliverables ({completedDeliverables}/{totalDeliverables})
+              Livrables ({completedDeliverables}/{totalDeliverables})
             </h2>
             <div className="space-y-3">
               {campaign.deliverables.length === 0 ? (
-                <p className="text-gray-400 text-center py-8">No deliverables defined</p>
+                <p className="text-gray-400 text-center py-8">Aucun livrable défini</p>
               ) : (
                 campaign.deliverables.map((deliverable, index) => (
                   <div
@@ -226,7 +226,7 @@ export const CampaignDetail: React.FC = () => {
                         </Badge>
                         {deliverable.completed && (
                           <Badge className="bg-green-500 text-white text-xs">
-                            ✓ Completed
+                            ✓ Terminé
                           </Badge>
                         )}
                       </div>
@@ -241,7 +241,7 @@ export const CampaignDetail: React.FC = () => {
             {totalDeliverables > 0 && (
               <div className="mt-6">
                 <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-400">Progress</span>
+                  <span className="text-gray-400">Progression</span>
                   <span className="font-medium">{completionRate}%</span>
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-2">
@@ -258,10 +258,10 @@ export const CampaignDetail: React.FC = () => {
         {/* Right Column - Influencers */}
         <div className="space-y-6">
           <Card className="p-6">
-            <h2 className="text-xl font-bold mb-4">Assigned Influencers</h2>
+            <h2 className="text-xl font-bold mb-4">Influenceurs Assignés</h2>
             <div className="space-y-3">
               {assignedInfluencers.length === 0 ? (
-                <p className="text-gray-400 text-center py-8">No influencers assigned</p>
+                <p className="text-gray-400 text-center py-8">Aucun influenceur assigné</p>
               ) : (
                 assignedInfluencers.map(influencer => {
                   const score = calculateInfluenceScore(influencer);
@@ -280,7 +280,7 @@ export const CampaignDetail: React.FC = () => {
                       <p className="text-sm text-gray-400 mb-2">{influencer.platform}</p>
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-gray-400">
-                          {influencer.subscribers.toLocaleString()} subscribers
+                          {influencer.subscribers.toLocaleString()} abonnés
                         </span>
                         <Badge
                           variant={influencer.availability === 'Disponible' ? 'primary' : 'secondary'}
@@ -299,10 +299,10 @@ export const CampaignDetail: React.FC = () => {
           {/* Quick Stats */}
           {assignedInfluencers.length > 0 && (
             <Card className="p-6">
-              <h3 className="text-lg font-bold mb-4">Influencer Stats</h3>
+              <h3 className="text-lg font-bold mb-4">Statistiques des Influenceurs</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Total Reach</span>
+                  <span className="text-gray-400">Portée Totale</span>
                   <span className="font-bold">
                     {assignedInfluencers
                       .reduce((sum, i) => sum + i.subscribers, 0)
@@ -310,7 +310,7 @@ export const CampaignDetail: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Avg. Score</span>
+                  <span className="text-gray-400">Score Moyen</span>
                   <span className="font-bold">
                     {(
                       assignedInfluencers.reduce(
@@ -321,7 +321,7 @@ export const CampaignDetail: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Available</span>
+                  <span className="text-gray-400">Disponibles</span>
                   <span className="font-bold">
                     {assignedInfluencers.filter(i => i.availability === 'Disponible').length}/
                     {assignedInfluencers.length}

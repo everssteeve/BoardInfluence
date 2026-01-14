@@ -19,7 +19,7 @@ const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com/youtube/v3';
 function getApiKey(): string {
   const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
   if (!apiKey) {
-    throw new Error('YouTube API key not configured. Please set VITE_YOUTUBE_API_KEY in .env file');
+    throw new Error('Clé API YouTube non configurée. Veuillez définir VITE_YOUTUBE_API_KEY dans le fichier .env');
   }
   return apiKey;
 }
@@ -83,13 +83,13 @@ export async function fetchChannelMetrics(channelId: string): Promise<YoutubeCha
 
     if (!response.ok) {
       const errorData: YoutubeApiError = await response.json();
-      throw new Error(errorData.error.message || 'Failed to fetch channel data');
+      throw new Error(errorData.error.message || 'Échec de récupération des données de la chaîne');
     }
 
     const data: YoutubeChannelResponse = await response.json();
 
     if (!data.items || data.items.length === 0) {
-      throw new Error('Channel not found');
+      throw new Error('Chaîne introuvable');
     }
 
     const stats = data.items[0].statistics;
@@ -113,7 +113,7 @@ export async function fetchChannelMetrics(channelId: string): Promise<YoutubeCha
     };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`YouTube API error: ${error.message}`);
+      throw new Error(`Erreur API YouTube: ${error.message}`);
     }
     throw error;
   }
@@ -131,13 +131,13 @@ export async function fetchVideoMetrics(videoId: string): Promise<YoutubeVideoMe
 
     if (!response.ok) {
       const errorData: YoutubeApiError = await response.json();
-      throw new Error(errorData.error.message || 'Failed to fetch video data');
+      throw new Error(errorData.error.message || 'Échec de récupération des données de la vidéo');
     }
 
     const data: YoutubeVideoResponse = await response.json();
 
     if (!data.items || data.items.length === 0) {
-      throw new Error('Video not found');
+      throw new Error('Vidéo introuvable');
     }
 
     const video = data.items[0];
@@ -162,7 +162,7 @@ export async function fetchVideoMetrics(videoId: string): Promise<YoutubeVideoMe
     };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`YouTube API error: ${error.message}`);
+      throw new Error(`Erreur API YouTube: ${error.message}`);
     }
     throw error;
   }
@@ -183,7 +183,7 @@ async function fetchRecentChannelVideos(
   try {
     const searchResponse = await fetch(searchUrl);
     if (!searchResponse.ok) {
-      throw new Error('Failed to fetch channel videos');
+      throw new Error('Échec de récupération des vidéos de la chaîne');
     }
 
     const searchData = await searchResponse.json();
@@ -198,7 +198,7 @@ async function fetchRecentChannelVideos(
     const videosResponse = await fetch(videosUrl);
 
     if (!videosResponse.ok) {
-      throw new Error('Failed to fetch video statistics');
+      throw new Error('Échec de récupération des statistiques de la vidéo');
     }
 
     const videosData: YoutubeVideoResponse = await videosResponse.json();
@@ -224,7 +224,7 @@ async function fetchRecentChannelVideos(
       };
     });
   } catch (error) {
-    console.error('Error fetching recent videos:', error);
+    console.error('Erreur lors de la récupération des vidéos récentes:', error);
     return [];
   }
 }
@@ -256,7 +256,7 @@ export async function fetchMultipleVideoMetrics(
 
     if (!response.ok) {
       const errorData: YoutubeApiError = await response.json();
-      throw new Error(errorData.error.message || 'Failed to fetch videos data');
+      throw new Error(errorData.error.message || 'Échec de récupération des données des vidéos');
     }
 
     const data: YoutubeVideoResponse = await response.json();
@@ -283,7 +283,7 @@ export async function fetchMultipleVideoMetrics(
     });
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`YouTube API error: ${error.message}`);
+      throw new Error(`Erreur API YouTube: ${error.message}`);
     }
     throw error;
   }
