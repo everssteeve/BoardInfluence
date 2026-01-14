@@ -1,4 +1,5 @@
 import { Game } from './Game';
+import type { YoutubeChannelMetrics } from '../youtube';
 
 export type Platform = 'YouTube' | 'Twitch' | 'Blog' | 'Instagram' | 'TikTok' | 'Podcast';
 
@@ -43,6 +44,9 @@ export interface Influencer {
   pricingNotes: string;
   availability: Availability;
   games: Game[];
+  youtubeChannelId?: string;
+  youtubeMetrics?: YoutubeChannelMetrics;
+  lastYoutubeSync?: string;
   createdAt: string;
   updatedAt: string;
 }
