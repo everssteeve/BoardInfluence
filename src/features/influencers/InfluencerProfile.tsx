@@ -5,20 +5,23 @@ import {
   MapPin,
   DollarSign,
   Users,
-  Star,
-  Target,
   ExternalLink,
-  TrendingUp,
   Calendar,
-  FileText
+  FileText,
+  Video,
+  Eye,
+  Activity
 } from 'lucide-react';
 import { useStore } from '../../store';
 import { Card } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
+import { YoutubeSyncButton } from '../../components/common/YoutubeSyncButton';
 import { formatCurrency } from '../../utils/formatters/numberFormatter';
 import { formatDate } from '../../utils/formatters/dateFormatter';
 import { calculateInfluenceScore } from '../../utils/helpers/scoreHelpers';
+import { syncInfluencerYoutubeMetrics } from '../../services/youtube/youtubeSyncService';
+import { extractChannelId } from '../../services/youtube/youtubeService';
 
 const platformColors: Record<string, string> = {
   YouTube: 'bg-red-500',
@@ -49,6 +52,7 @@ export const InfluencerProfile: React.FC = () => {
   const influencers = useStore(state => state.influencers);
   const campaigns = useStore(state => state.campaigns);
   const games = useStore(state => state.games);
+  const updateInfluencer = useStore(state => state.updateInfluencer);
 
   const influencer = influencers.find(i => i.id === id);
 
@@ -75,6 +79,31 @@ export const InfluencerProfile: React.FC = () => {
   const completedCampaigns = relatedCampaigns.filter(c => c.status === 'completed').length;
   const activeCampaigns = relatedCampaigns.filter(c => c.status === 'in_progress').length;
 
+  // Handle YouTube sync
+  const handleYoutubeSync = async () => {
+    if (!influencer.youtubeChannelId && influencer.url) {
+      const channelId = extractChannelId(influencer.url);
+      if (channelId) {
+        updateInfluencer(influencer.id, { youtubeChannelId: channelId });
+      }
+    }
+
+    const updated = await syncInfluencerYoutubeMetrics(influencer);
+    if (updated) {
+      updateInfluencer(influencer.id, {
+        youtubeMetrics: updated.youtubeMetrics,
+        lastYoutubeSync: updated.lastYoutubeSync,
+      });
+    }
+  };
+
+  // Use YouTube metrics when available
+  const subscribers = influencer.youtubeMetrics?.subscriberCount ?? influencer.subscribers;
+  const engagementRate = influencer.youtubeMetrics?.engagementRate;
+  const videoCount = influencer.youtubeMetrics?.videoCount;
+  const averageViews = influencer.youtubeMetrics?.averageViews;
+  const hasYoutubeMetrics = !!influencer.youtubeMetrics;
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -100,28 +129,43 @@ export const InfluencerProfile: React.FC = () => {
         </div>
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-6">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-orange-500/20 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-orange-500" />
+      {/* YouTube Sync Button */}
+      {influencer.platform === 'YouTube' && (
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-red-500/20 rounded-lg">
+                <Video className="w-5 h-5 text-red-500" />
+              </div>
+              <div>
+                <p className="font-medium">Métriques YouTube</p>
+                <p className="text-sm text-gray-400">
+                  {hasYoutubeMetrics
+                    ? 'Données synchronisées depuis YouTube'
+                    : 'Synchronisez pour récupérer les données YouTube'}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-gray-400">Influence Score</p>
-              <p className="text-2xl font-bold">{score.toFixed(1)}</p>
-            </div>
+            <YoutubeSyncButton
+              onSync={handleYoutubeSync}
+              lastSyncDate={influencer.lastYoutubeSync}
+              size="sm"
+            />
           </div>
         </Card>
+      )}
 
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-6">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-blue-500/20 rounded-lg">
               <Users className="w-6 h-6 text-blue-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Subscribers</p>
-              <p className="text-2xl font-bold">{influencer.subscribers.toLocaleString()}</p>
+              <p className="text-sm text-gray-400">Abonnés</p>
+              <p className="text-2xl font-bold">{subscribers.toLocaleString()}</p>
+              {hasYoutubeMetrics && <p className="text-xs text-green-400">Via YouTube API</p>}
             </div>
           </div>
         </Card>
@@ -129,11 +173,18 @@ export const InfluencerProfile: React.FC = () => {
         <Card className="p-6">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-green-500/20 rounded-lg">
-              <Target className="w-6 h-6 text-green-500" />
+              <Activity className="w-6 h-6 text-green-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Campaigns</p>
-              <p className="text-2xl font-bold">{relatedCampaigns.length}</p>
+              <p className="text-sm text-gray-400">Engagement</p>
+              {engagementRate !== undefined ? (
+                <>
+                  <p className="text-2xl font-bold">{engagementRate.toFixed(2)}%</p>
+                  <p className="text-xs text-gray-400">10 dernières vidéos</p>
+                </>
+              ) : (
+                <p className="text-2xl font-bold">{influencer.engagement}/10</p>
+              )}
             </div>
           </div>
         </Card>
@@ -141,11 +192,37 @@ export const InfluencerProfile: React.FC = () => {
         <Card className="p-6">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-purple-500/20 rounded-lg">
-              <Star className="w-6 h-6 text-purple-500" />
+              <Video className="w-6 h-6 text-purple-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Quality</p>
-              <p className="text-2xl font-bold">{influencer.quality}/5</p>
+              <p className="text-sm text-gray-400">Consistance</p>
+              {videoCount !== undefined ? (
+                <>
+                  <p className="text-2xl font-bold">{videoCount}</p>
+                  <p className="text-xs text-gray-400">vidéos publiées</p>
+                </>
+              ) : (
+                <p className="text-2xl font-bold">-</p>
+              )}
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-orange-500/20 rounded-lg">
+              <Eye className="w-6 h-6 text-orange-500" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Vues moyennes</p>
+              {averageViews !== undefined ? (
+                <>
+                  <p className="text-2xl font-bold">{averageViews.toLocaleString()}</p>
+                  <p className="text-xs text-gray-400">par vidéo</p>
+                </>
+              ) : (
+                <p className="text-2xl font-bold">-</p>
+              )}
             </div>
           </div>
         </Card>
@@ -188,16 +265,28 @@ export const InfluencerProfile: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-400 mb-1">Engagement Rating</p>
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 bg-gray-700 rounded-full h-2">
-                      <div
-                        className="bg-blue-500 h-2 rounded-full"
-                        style={{ width: `${influencer.engagement * 10}%` }}
-                      />
+                  <p className="text-sm text-gray-400 mb-1">Taux d'engagement</p>
+                  {engagementRate !== undefined ? (
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 bg-gray-700 rounded-full h-2">
+                        <div
+                          className="bg-green-500 h-2 rounded-full"
+                          style={{ width: `${Math.min(engagementRate * 10, 100)}%` }}
+                        />
+                      </div>
+                      <span className="font-bold">{engagementRate.toFixed(2)}%</span>
                     </div>
-                    <span className="font-bold">{influencer.engagement}/10</span>
-                  </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 bg-gray-700 rounded-full h-2">
+                        <div
+                          className="bg-blue-500 h-2 rounded-full"
+                          style={{ width: `${influencer.engagement * 10}%` }}
+                        />
+                      </div>
+                      <span className="font-bold">{influencer.engagement}/10</span>
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -334,10 +423,28 @@ export const InfluencerProfile: React.FC = () => {
                 </div>
               </div>
 
+              {hasYoutubeMetrics && (
+                <>
+                  <div>
+                    <p className="text-sm text-gray-400 mb-2">Taux d'engagement réel</p>
+                    <p className="text-xl font-bold">{engagementRate?.toFixed(2)}%</p>
+                    <p className="text-xs text-gray-500">Basé sur 10 dernières vidéos</p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-400 mb-2">Vues moyennes par vidéo</p>
+                    <p className="text-xl font-bold">{averageViews?.toLocaleString()}</p>
+                    <p className="text-xs text-gray-500">Sur {videoCount} vidéos</p>
+                  </div>
+                </>
+              )}
+
               <div>
                 <p className="text-sm text-gray-400 mb-2">Reach Estimate</p>
                 <p className="text-xl font-bold">
-                  {(influencer.subscribers * (influencer.engagement / 10)).toLocaleString()}
+                  {engagementRate !== undefined
+                    ? (subscribers * (engagementRate / 100)).toLocaleString()
+                    : (influencer.subscribers * (influencer.engagement / 10)).toLocaleString()}
                 </p>
                 <p className="text-xs text-gray-500">Based on engagement rate</p>
               </div>
@@ -366,13 +473,21 @@ export const InfluencerProfile: React.FC = () => {
                 <span className="font-bold">{influencer.platform}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Subscribers</span>
-                <span className="font-bold">{influencer.subscribers.toLocaleString()}</span>
+                <span className="text-gray-400">Abonnés</span>
+                <span className="font-bold">{subscribers.toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Engagement</span>
-                <span className="font-bold">{influencer.engagement}/10</span>
+                <span className="font-bold">
+                  {engagementRate !== undefined ? `${engagementRate.toFixed(2)}%` : `${influencer.engagement}/10`}
+                </span>
               </div>
+              {videoCount !== undefined && (
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Vidéos publiées</span>
+                  <span className="font-bold">{videoCount}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-gray-400">Quality</span>
                 <span className="font-bold">{influencer.quality}/5</span>
