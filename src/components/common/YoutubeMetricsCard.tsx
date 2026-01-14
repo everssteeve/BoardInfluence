@@ -1,4 +1,4 @@
-import { Eye, ThumbsUp, MessageCircle, Users, TrendingUp } from 'lucide-react';
+import { Eye, ThumbsUp, MessageCircle, Users, TrendingUp, type LucideIcon } from 'lucide-react';
 import type { YoutubeChannelMetrics, YoutubeCampaignMetrics } from '@/types/youtube';
 
 interface YoutubeMetricsCardProps {
@@ -93,7 +93,7 @@ export function YoutubeMetricsCard({ metrics, type }: YoutubeMetricsCardProps) {
 }
 
 interface MetricItemProps {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: LucideIcon;
   label: string;
   value: string;
 }

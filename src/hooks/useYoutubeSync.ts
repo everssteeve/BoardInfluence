@@ -23,7 +23,6 @@ export function useYoutubeSync(): UseSyncResult {
 
   const updateInfluencer = useStore((state) => state.updateInfluencer);
   const updateCampaign = useStore((state) => state.updateCampaign);
-  const user = useStore((state) => state.user);
 
   const isConfigured = isYoutubeApiConfigured();
 
@@ -49,11 +48,11 @@ export function useYoutubeSync(): UseSyncResult {
       const updatedInfluencer = await influencersDB.update(
         influencer.id,
         updates,
-        user?.id || influencer.userId
+        influencer.userId
       );
 
       // Update in store
-      updateInfluencer(updatedInfluencer);
+      updateInfluencer(influencer.id, updatedInfluencer);
 
       return;
     } catch (err) {
@@ -82,11 +81,11 @@ export function useYoutubeSync(): UseSyncResult {
       const updatedCampaign = await campaignsDB.update(
         campaign.id,
         updates,
-        user?.id || campaign.userId
+        campaign.userId
       );
 
       // Update in store
-      updateCampaign(updatedCampaign);
+      updateCampaign(campaign.id, updatedCampaign);
 
       return;
     } catch (err) {
