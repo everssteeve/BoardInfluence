@@ -24,7 +24,7 @@ export class AuthService {
       }
 
       if (!authData.user) {
-        return { user: null, error: new Error('Failed to create user') };
+        return { user: null, error: new Error('Échec de création de l\'utilisateur') };
       }
 
       return {
@@ -37,7 +37,7 @@ export class AuthService {
     } catch (error) {
       return {
         user: null,
-        error: error instanceof Error ? error : new Error('Unknown error during signup'),
+        error: error instanceof Error ? error : new Error('Erreur inconnue lors de l\'inscription'),
       };
     }
   }
@@ -57,7 +57,7 @@ export class AuthService {
       }
 
       if (!authData.user) {
-        return { user: null, error: new Error('Failed to login') };
+        return { user: null, error: new Error('Échec de connexion') };
       }
 
       return {
@@ -70,7 +70,7 @@ export class AuthService {
     } catch (error) {
       return {
         user: null,
-        error: error instanceof Error ? error : new Error('Unknown error during login'),
+        error: error instanceof Error ? error : new Error('Erreur inconnue lors de la connexion'),
       };
     }
   }
@@ -84,7 +84,7 @@ export class AuthService {
       return { error };
     } catch (error) {
       return {
-        error: error instanceof Error ? error : new Error('Unknown error during logout'),
+        error: error instanceof Error ? error : new Error('Erreur inconnue lors de la déconnexion'),
       };
     }
   }
@@ -107,7 +107,7 @@ export class AuthService {
         email: user.email!,
       };
     } catch (error) {
-      console.error('Error getting current user:', error);
+      console.error('Erreur lors de la récupération de l\'utilisateur actuel:', error);
       return null;
     }
   }
@@ -122,7 +122,7 @@ export class AuthService {
       } = await supabase.auth.getSession();
       return session;
     } catch (error) {
-      console.error('Error getting session:', error);
+      console.error('Erreur lors de la récupération de la session:', error);
       return null;
     }
   }
@@ -143,7 +143,7 @@ export class AuthService {
       }
 
       if (!data) {
-        return { profile: null, error: new Error('Profile not found') };
+        return { profile: null, error: new Error('Profil introuvable') };
       }
 
       return {
@@ -161,7 +161,7 @@ export class AuthService {
     } catch (error) {
       return {
         profile: null,
-        error: error instanceof Error ? error : new Error('Unknown error fetching profile'),
+        error: error instanceof Error ? error : new Error('Erreur inconnue lors de la récupération du profil'),
       };
     }
   }
@@ -191,7 +191,7 @@ export class AuthService {
       }
 
       if (!data) {
-        return { profile: null, error: new Error('Failed to update profile') };
+        return { profile: null, error: new Error('Échec de mise à jour du profil') };
       }
 
       return {
@@ -209,7 +209,7 @@ export class AuthService {
     } catch (error) {
       return {
         profile: null,
-        error: error instanceof Error ? error : new Error('Unknown error updating profile'),
+        error: error instanceof Error ? error : new Error('Erreur inconnue lors de la mise à jour du profil'),
       };
     }
   }
@@ -248,7 +248,7 @@ export class AuthService {
       return { error: null };
     } catch (error) {
       return {
-        error: error instanceof Error ? error : new Error('Unknown error during password reset request'),
+        error: error instanceof Error ? error : new Error('Erreur inconnue lors de la demande de réinitialisation du mot de passe'),
       };
     }
   }
@@ -269,7 +269,7 @@ export class AuthService {
       return { error: null };
     } catch (error) {
       return {
-        error: error instanceof Error ? error : new Error('Unknown error during password update'),
+        error: error instanceof Error ? error : new Error('Erreur inconnue lors de la mise à jour du mot de passe'),
       };
     }
   }

@@ -25,7 +25,7 @@ export async function syncInfluencerYoutubeMetrics(
   influencer: Influencer
 ): Promise<Partial<Influencer>> {
   if (influencer.platform !== 'YouTube') {
-    throw new Error('Influencer platform must be YouTube');
+    throw new Error('La plateforme de l\'influenceur doit être YouTube');
   }
 
   try {
@@ -35,7 +35,7 @@ export async function syncInfluencerYoutubeMetrics(
     if (!channelId) {
       channelId = extractChannelId(influencer.url) ?? undefined;
       if (!channelId) {
-        throw new Error('Could not extract YouTube channel ID from URL. Please use a direct channel URL (youtube.com/channel/...)');
+        throw new Error('Impossible d\'extraire l\'ID de chaîne YouTube de l\'URL. Veuillez utiliser une URL de chaîne directe (youtube.com/channel/...)');
       }
     }
 
@@ -54,7 +54,7 @@ export async function syncInfluencerYoutubeMetrics(
     };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Failed to sync YouTube metrics: ${error.message}`);
+      throw new Error(`Échec de synchronisation des métriques YouTube: ${error.message}`);
     }
     throw error;
   }
@@ -74,7 +74,7 @@ export async function syncCampaignYoutubeMetrics(
       .filter((url) => url.includes('youtube.com') || url.includes('youtu.be'));
 
     if (videoUrls.length === 0) {
-      throw new Error('No completed YouTube videos found in campaign deliverables');
+      throw new Error('Aucune vidéo YouTube terminée trouvée dans les livrables de la campagne');
     }
 
     // Extract video IDs
@@ -83,7 +83,7 @@ export async function syncCampaignYoutubeMetrics(
       .filter((id): id is string => id !== null);
 
     if (videoIds.length === 0) {
-      throw new Error('Could not extract video IDs from URLs');
+      throw new Error('Impossible d\'extraire les ID de vidéo des URLs');
     }
 
     // Fetch metrics for all videos
@@ -104,7 +104,7 @@ export async function syncCampaignYoutubeMetrics(
     };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Failed to sync campaign metrics: ${error.message}`);
+      throw new Error(`Échec de synchronisation des métriques de campagne: ${error.message}`);
     }
     throw error;
   }
@@ -124,7 +124,7 @@ export async function getDeliverableMetrics(
 
     return await fetchVideoMetrics(videoId);
   } catch (error) {
-    console.error('Error fetching deliverable metrics:', error);
+    console.error('Erreur lors de la récupération des métriques du livrable:', error);
     return null;
   }
 }
@@ -154,7 +154,7 @@ export async function syncMultipleInfluencers(
         await delay(500); // 500ms delay between requests
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
       results.push({ influencer, updates: null, error: errorMessage });
     }
   }
@@ -187,7 +187,7 @@ export async function syncMultipleCampaigns(
         await delay(500); // 500ms delay between requests
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
       results.push({ campaign, updates: null, error: errorMessage });
     }
   }
