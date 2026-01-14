@@ -1,3 +1,5 @@
+import type { YoutubeCampaignMetrics } from '../youtube';
+
 export type CampaignStatus = 'planned' | 'in_progress' | 'completed' | 'cancelled';
 
 export type DeliverableType = 'video' | 'stream' | 'article' | 'post' | 'review' | 'other';
@@ -24,6 +26,9 @@ export interface Campaign {
   objectives: string;
   deliverables: Deliverable[];
   notes: string;
+  performanceScore?: number;
+  youtubeMetrics?: YoutubeCampaignMetrics;
+  lastYoutubeSync?: string;
   createdAt: string;
   updatedAt: string;
 }

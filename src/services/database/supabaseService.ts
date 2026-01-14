@@ -229,6 +229,9 @@ export const influencersDB = {
         pricing: influencer.pricing,
         pricing_notes: influencer.pricingNotes,
         availability: influencer.availability,
+        youtube_channel_id: influencer.youtubeChannelId || null,
+        youtube_metrics: influencer.youtubeMetrics || null,
+        last_youtube_sync: influencer.lastYoutubeSync || null,
       })
       .select()
       .single();
@@ -255,6 +258,9 @@ export const influencersDB = {
     if (influencer.pricing !== undefined) updateData.pricing = influencer.pricing;
     if (influencer.pricingNotes !== undefined) updateData.pricing_notes = influencer.pricingNotes;
     if (influencer.availability !== undefined) updateData.availability = influencer.availability;
+    if (influencer.youtubeChannelId !== undefined) updateData.youtube_channel_id = influencer.youtubeChannelId;
+    if (influencer.youtubeMetrics !== undefined) updateData.youtube_metrics = influencer.youtubeMetrics;
+    if (influencer.lastYoutubeSync !== undefined) updateData.last_youtube_sync = influencer.lastYoutubeSync;
 
     const { data, error } = await supabase
       .from('influencers')
@@ -342,6 +348,9 @@ export const campaignsDB = {
         objectives: campaign.objectives,
         deliverables: campaign.deliverables,
         notes: campaign.notes,
+        performance_score: campaign.performanceScore || null,
+        youtube_metrics: campaign.youtubeMetrics || null,
+        last_youtube_sync: campaign.lastYoutubeSync || null,
       })
       .select()
       .single();
@@ -366,6 +375,9 @@ export const campaignsDB = {
     if (campaign.objectives !== undefined) updateData.objectives = campaign.objectives;
     if (campaign.deliverables !== undefined) updateData.deliverables = campaign.deliverables;
     if (campaign.notes !== undefined) updateData.notes = campaign.notes;
+    if (campaign.performanceScore !== undefined) updateData.performance_score = campaign.performanceScore;
+    if (campaign.youtubeMetrics !== undefined) updateData.youtube_metrics = campaign.youtubeMetrics;
+    if (campaign.lastYoutubeSync !== undefined) updateData.last_youtube_sync = campaign.lastYoutubeSync;
 
     const { data, error } = await supabase
       .from('campaigns')
@@ -434,6 +446,9 @@ function mapInfluencerFromDB(dbInfluencer: any): Influencer {
     pricingNotes: dbInfluencer.pricing_notes,
     availability: dbInfluencer.availability,
     games: [], // Games relationship can be populated separately if needed
+    youtubeChannelId: dbInfluencer.youtube_channel_id,
+    youtubeMetrics: dbInfluencer.youtube_metrics,
+    lastYoutubeSync: dbInfluencer.last_youtube_sync,
     createdAt: dbInfluencer.created_at,
     updatedAt: dbInfluencer.updated_at,
   };
@@ -453,6 +468,9 @@ function mapCampaignFromDB(dbCampaign: any): Campaign {
     objectives: dbCampaign.objectives,
     deliverables: dbCampaign.deliverables,
     notes: dbCampaign.notes,
+    performanceScore: dbCampaign.performance_score,
+    youtubeMetrics: dbCampaign.youtube_metrics,
+    lastYoutubeSync: dbCampaign.last_youtube_sync,
     createdAt: dbCampaign.created_at,
     updatedAt: dbCampaign.updated_at,
   };
